@@ -9,5 +9,8 @@
         <module name="Data5408" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Data5408" target="16" />
+    </bytecodeTargetLevel>
   </component>
 </project>
