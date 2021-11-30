@@ -7,14 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;  // Import the IOException class to handle errors
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 
 public class UserDaoImpl implements userDao {
 
 	@Override
 	public void append(User user) {
-		String user_info = user.getUser_id()+","+user.getUsername()+","+user.getPassword()+","+user.getSecurity_question1()+","+user.getSecurity_answer1()+","+user.getSecurity_question2()+","+user.getSecurity_answer2()+","+user.getSecurity_question3()+","+user.getSecurity_answer3();
+		String user_info = user.getUser_id()+"#"+user.getUsername()+"#"+user.getPassword()+"#"+user.getSecurity_question1()+"#"+user.getSecurity_answer1()+"#"+user.getSecurity_question2()+"#"+user.getSecurity_answer2()+"#"+user.getSecurity_question3()+"#"+user.getSecurity_answer3();
 		FileWriter myWriter;
 		try {
 			myWriter = new FileWriter("User_Profile.txt", true);
@@ -33,7 +32,7 @@ public class UserDaoImpl implements userDao {
 		      File myObj = new File(filename);
 		      Scanner myReader = new Scanner(myObj);
 			  while (myReader.hasNextLine()) {
-		        User user = createUserObject(myReader.nextLine().split("[,]",0));
+		        User user = createUserObject(myReader.nextLine().split("[#]",0));
 				dataMap.put(user.getUser_id(), (Object) user);
 		      }
 			 myReader.close();
