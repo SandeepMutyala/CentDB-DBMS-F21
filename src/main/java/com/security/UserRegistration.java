@@ -1,5 +1,5 @@
 package com.security;
-import com.Constants;
+import utils.Constants;
 import dao.UserDaoImpl;
 import model.User;
 import java.util.Scanner;

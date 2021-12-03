@@ -1,4 +1,4 @@
-package com;
+package utils;
 
 public class Constants {
     public static String INVALID_SELECTION = "Please select a valid option";

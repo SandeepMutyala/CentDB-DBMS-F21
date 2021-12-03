@@ -1,7 +1,11 @@
-package com;
-
 import com.security.UserLogin;
 import com.security.UserRegistration;
+import dao.DatabaseOperations;
+import dao.DatabaseOperationsImpl;
+import utils.Constants;
+import utils.GlobalSessionDetails;
+import utils.QueryAnalyzer;
+
 import java.util.Scanner;
 
 public class Main {
@@ -13,7 +17,7 @@ public class Main {
         System.out.println("2: Login");
         System.out.println("3: Exit");
         choice = sc.nextInt();
-        switch (choice) {
+        /*switch (choice) {
             case 1:
                 isSuccessResponse = UserRegistration.registerUser();
                 break;
@@ -25,8 +29,8 @@ public class Main {
             default:
                 System.out.println(Constants.INVALID_SELECTION);
                 break;
-        }
-        while (isSuccessResponse) {
+        }*/
+        //while (isSuccessResponse) {
             System.out.println("\n======================================================================================\n======================================================================================\n");
             System.out.println("Please select an option to perform an action");
             System.out.println("1: Write Queries");
@@ -37,6 +41,11 @@ public class Main {
             choice = sc.nextInt();
             switch (choice) {
                 case 1: //writeQueries();
+                    Scanner scQuery = new Scanner(System.in);
+                    String query = scQuery.nextLine();
+                    DatabaseOperations dbOperations=new DatabaseOperationsImpl();
+                    queryOutputAnalysis(QueryAnalyzer.splitQuery(query,dbOperations));
+                    //SplitQuery.splitQuery(query, GlobalSessionDetails.loggedInUsername);
                     break;
                 case 2: //handleExport();
                     break;
@@ -49,6 +58,20 @@ public class Main {
                 default: System.out.println(Constants.INVALID_SELECTION);
                     break;
             }
+       // }
+    }
+
+    public static void queryOutputAnalysis(int result){
+        switch(result){
+            case 1: System.out.println("Db Created successfully");
+                    break;
+            case 2: System.out.println("Database already exists");
+                    break;
+            case 3: System.out.println("Table Created successfully");
+                    break;
+            case 4: System.out.println("Table Creation Failed");
+                    break;
+            default: System.out.println("Oops! Creation failed");
         }
     }
 }

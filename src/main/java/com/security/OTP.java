@@ -5,14 +5,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.mail.internet.AddressException;
+/*import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.Transport;*/
 
 
 public class OTP {
@@ -43,7 +43,7 @@ public class OTP {
 
 
 
-    public  void generateOTP(byte[] key, long movingFactor, int truncationOffset) {
+    /*public  void generateOTP(byte[] key, long movingFactor, int truncationOffset) {
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -112,7 +112,7 @@ public class OTP {
         } catch (MessagingException mex) {
             mex.printStackTrace();
         }
-        }
+        }*/
 
 
         /**
