@@ -1,11 +1,10 @@
 package utils;
 
-import dao.genericDao;
-
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+
+
+import static utils.FileWriterClass.createDuplicateCopy;
 
 public class SchemaDetails {
     public static boolean createSchemaFile(String schemaPath) {
@@ -22,10 +21,31 @@ public class SchemaDetails {
             }
     }
 
-    public static boolean insertInSchemaFile(String query) {
-        boolean result=false;
-        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/"+ "StructureAndDataExport.txt";
+    public static boolean insertInSchemaFile(String query, Boolean isTransaction) throws IOException {
+        boolean result = false;
+        System.out.println("in 26");
+        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/";
+        System.out.println("istr "+isTransaction);
+        if(isTransaction) {
+
+            completeSchemaPath += "tempStructureAndDataExport.txt";
+            System.out.println(completeSchemaPath);
+            String permanentExportPath= GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/StructureAndDataExport.txt";
+            File permanentExportFile = new File("StructureAndDataExport.txt");
+            File tempExportFile = new File("tempStructureAndDataExport.txt");
+            System.out.println("line 35"+!tempExportFile.exists());
+            if(!tempExportFile.exists()){
+                System.out.println("in" + completeSchemaPath);
+                tempExportFile.createNewFile();
+            }
+            if(permanentExportFile.exists()) {
+                createDuplicateCopy(tempExportFile, permanentExportFile);
+            }
+        } else {
+            completeSchemaPath += "StructureAndDataExport.txt";
+        }
         try {
+            System.out.println("in try"+ completeSchemaPath);
             FileWriterClass.writeInFile(query.concat(";"),completeSchemaPath);
             result=true;
         } catch (Exception e) {

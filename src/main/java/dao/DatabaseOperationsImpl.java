@@ -7,12 +7,11 @@ import utils.FileWriterClass;
 import utils.GlobalSessionDetails;
 import utils.SchemaDetails;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static utils.FileWriterClass.createDuplicateCopy;
 
 public class DatabaseOperationsImpl implements DatabaseOperations {
     /*
@@ -22,11 +21,13 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     * result=4, Table creation failed
     * */
     @Override
-    public  int createDb(String query){
+    public  int createDb(String query, Boolean isTransaction) throws IOException {
         int result=0;
         String[] analyseQuery=query.split(" ");
-        String dbPath = GlobalSessionDetails.loggedInUsername+"/";
+
+        String dbPath = isTransaction ? GlobalSessionDetails.loggedInUsername+"/temp": GlobalSessionDetails.loggedInUsername+"/";
         String directoryPath=dbPath.concat(analyseQuery[2]);
+        GlobalSessionDetails.dbInAction = isTransaction? "temp"+analyseQuery[2] : analyseQuery[2];
         /*if(analyseQuery[2].substring(analyseQuery[2].length() - 1).equals(";")){
             directoryPath = dbPath.concat(analyseQuery[2].substring(0,analyseQuery[2].length()-1));
         }
@@ -34,19 +35,26 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
             directoryPath=dbPath.concat(analyseQuery[2]);
         }*/
         // String fileName = id + getTimeStamp() + ".txt";
-
         File directory = new File(directoryPath);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdirs();
-            if(SchemaDetails.insertInSchemaFile(query)){
-                result=1;
+            if (isTransaction) {
+                String permanantDirectoryPath = GlobalSessionDetails.loggedInUsername+ "/".concat(analyseQuery[2]);
+                File permanantDirectory = new File(permanantDirectoryPath);
+                if (permanantDirectory.exists()) {
+                    createDuplicateCopy(directory, permanantDirectory);
+                }
+            }
+            System.out.println("print before 49"+isTransaction);
+            if (SchemaDetails.insertInSchemaFile(query, isTransaction)) {
+                result = 1;
             }
         }
         return 2;
     }
 
     @Override
-    public int createTable(String query) {
+    public int createTable(String query, Boolean isTransaction) {
         int result=0;
         String tableDiectoryPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/";
         String tablePath="";
@@ -69,7 +77,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 //create table file
                 File tableFile = new File(tablePath);
                     tableFile.createNewFile();
-                    if(SchemaDetails.insertInSchemaFile(query)){
+                    if(SchemaDetails.insertInSchemaFile(query, isTransaction)){
                         result=3;
                     }
             }
@@ -92,7 +100,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     }
 
     @Override
-    public void insertInTable(String query) throws IOException{
+    public void insertInTable(String query, Boolean isTransaction) throws IOException{
         String dbPath="";
         String tableName="";
 

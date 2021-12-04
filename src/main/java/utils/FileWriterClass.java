@@ -1,8 +1,6 @@
 package utils;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class FileWriterClass {
     public static void writeInFile(String query,String filePath){
@@ -16,4 +14,24 @@ public class FileWriterClass {
             e.printStackTrace();
         }
     }
+    public static void createDuplicateCopy (File fileOne, File fileTwo) throws IOException {
+        FileInputStream file2= new FileInputStream(fileTwo);
+        FileOutputStream file1 = new FileOutputStream(fileOne);
+
+        try {
+            int lineIndex;
+            while ((lineIndex = file2.read()) != -1) {
+                file1.write(lineIndex);
+            }
+        }
+        finally {
+            if (file2 != null) {
+                file2.close();
+            }
+            if (file1 != null) {
+                file1.close();
+            }
+        }
+    }
+
 }
