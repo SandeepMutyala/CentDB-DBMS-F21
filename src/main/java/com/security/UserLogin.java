@@ -1,8 +1,10 @@
 package com.security;
 
-import com.Constants;
+import utils.Constants;
 import dao.UserDaoImpl;
 import model.User;
+import utils.GlobalSessionDetails;
+
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -20,7 +22,11 @@ public class UserLogin {
             System.out.println(Constants.USER_CREDENTIALS_NOT_FOUND);
             return false;
         } else {
-            return validateUserLogin(userId, udi);
+            if(validateUserLogin(userId, udi)){
+                GlobalSessionDetails.loggedInUsername=username.trim();
+                return true;
+            }
+            return false;
         }
     }
 
