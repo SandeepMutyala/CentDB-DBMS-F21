@@ -24,9 +24,9 @@ public class SchemaDetails {
 
     public static boolean insertInSchemaFile(String query) {
         boolean result=false;
-        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" +  "StructureAndDataExport.txt";
+        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/"+ "StructureAndDataExport.txt";
         try {
-            appendInFile(query.concat(";"),completeSchemaPath);
+            FileWriterClass.writeInFile(query.concat(";"),completeSchemaPath);
             result=true;
         } catch (Exception e) {
             System.out.println("An error occurred while inserting into schema");
@@ -38,7 +38,7 @@ public class SchemaDetails {
 
 
 
-    public static void appendInFile(String query,String fileName) {
+    /*public static void appendInFile(String query,String fileName) {
         FileWriter myWriter;
         try {
             myWriter = new FileWriter(fileName, true);
@@ -48,6 +48,6 @@ public class SchemaDetails {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

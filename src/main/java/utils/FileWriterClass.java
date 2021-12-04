@@ -5,16 +5,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileWriterClass {
-    public static void writeInFile(String query,String fileName){
-        try (FileWriter fw = new FileWriter(fileName, true);
-             BufferedWriter bw = new BufferedWriter(fw)) {
-             bw.write(query);
-             bw.newLine();
-             bw.flush();
-             fw.flush();
+    public static void writeInFile(String query,String filePath){
+        FileWriter myWriter;
+        try {
+            myWriter = new FileWriter(filePath, true);
+            myWriter.write(query);
+            myWriter.write("\n");
+            myWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

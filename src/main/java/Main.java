@@ -30,7 +30,8 @@ public class Main {
                 System.out.println(Constants.INVALID_SELECTION);
                 break;
         }*/
-        //while (isSuccessResponse) {
+        try{
+            //while (isSuccessResponse) {
             System.out.println("\n======================================================================================\n======================================================================================\n");
             System.out.println("Please select an option to perform an action");
             System.out.println("1: Write Queries");
@@ -58,7 +59,11 @@ public class Main {
                 default: System.out.println(Constants.INVALID_SELECTION);
                     break;
             }
-       // }
+            // }
+        }catch(Exception ex){
+            System.out.println("Exceptiton occured"+ex);
+        }
+
     }
 
     public static void queryOutputAnalysis(int result){

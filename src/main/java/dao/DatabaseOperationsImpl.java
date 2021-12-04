@@ -1,5 +1,9 @@
 package dao;
 
+import Validations.DatabaseExists;
+import Validations.TableExistence;
+import utils.Constants;
+import utils.FileWriterClass;
 import utils.GlobalSessionDetails;
 import utils.SchemaDetails;
 
@@ -11,7 +15,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DatabaseOperationsImpl implements DatabaseOperations {
-
     /*
     * result=1, db successfully created
     * result=2, db already exists
@@ -51,14 +54,19 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         Matcher matchResult = tablePattern.matcher(query);
         try{
             if (matchResult.find()) {
-               // System.out.println("----"+"kkk "+matchResult.group(1)+"fsdfd "+matchResult.group(2));
                 String[] separateDbtableName=matchResult.group(1).split("\\.");
+
+                // if databse name is not in the query
                 if(separateDbtableName.length<=1){
                     tablePath=tableDiectoryPath.concat(matchResult.group(1))+".txt";
                 }
+
+                // if database name is in query
                 if(separateDbtableName.length>1){
                     tablePath=tableDiectoryPath.concat(separateDbtableName[1])+".txt";
                 }
+
+                //create table file
                 File tableFile = new File(tablePath);
                     tableFile.createNewFile();
                     if(SchemaDetails.insertInSchemaFile(query)){
@@ -83,17 +91,58 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
     }
 
-    /*INSERT INTO schema.table_name (column1, column2, column3, ...)
-VALUES (value1, value2, value3, ...);*/
     @Override
-    public void insertInTable(String query) {
+    public void insertInTable(String query) throws IOException{
+        String dbPath="";
+        String tableName="";
 
-        Pattern tablePattern = Pattern.compile(".*insert\\s+into\\s+([a-zA-Z0-9_\\.]*?)([(a-zA-Z0-9_\\.]*?)($|\\s+)", Pattern.CASE_INSENSITIVE);
-        Pattern ColumnValuePattern = Pattern.compile("\\bINSERT\\s+INTO\\s+\\S+\\s*\\(([^)]+)\\)\\s*VALUES\\s*\\(([^)]+)\\)", Pattern.CASE_INSENSITIVE);
+        // to spearate table and database name pattern
+        Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
+        Matcher matchTableResult = tablePattern.matcher(query);
+
+        // to fetch column name from the query pattern
+        Pattern ColumnValuePattern = Pattern.compile(Constants.COLUMN_NAME_VALUES_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher matchColumnValueResult = ColumnValuePattern.matcher(query);
 
-        System.out.println("insert query"+matchColumnValueResult.find());
-        System.out.println("----"+"0=> "+matchColumnValueResult.group(0)+"1=> "+matchColumnValueResult.group(1)+"2->"+matchColumnValueResult.group(2));
+        if(matchTableResult.find()){
+            // System.out.println(matchTableResult.group(1)+"Group tabel name");
+            String[] separateDbtableName=matchTableResult.group(1).split("\\.");
+            if(separateDbtableName.length==2){
+                if(DatabaseExists.validateDatabaseExistence(separateDbtableName[0]) && TableExistence.checkIfTableExists(separateDbtableName[1])){
+
+                    dbPath=separateDbtableName[0];
+                    tableName=separateDbtableName[1];
+
+                    if(matchColumnValueResult.find()){
+                        String[] columnNames=matchColumnValueResult.group(1).split(",");
+                        String[] columnValues=matchColumnValueResult.group(2).split(",");
+
+                        // checking if values and table column length entered by user is correct or not
+                        if(columnNames.length==columnValues.length){
+                            StringBuilder insertStringInFile=new StringBuilder();
+                            for(int i=0;i<columnNames.length;i++){
+                                insertStringInFile.append(columnNames[i]+":"+columnValues[i]+"#");
+                            }
+                            String formattedInsertStringInFile = insertStringInFile.toString().replaceAll(" ", "");
+                            String insertFilePath=GlobalSessionDetails.loggedInUsername+"/"+dbPath+"/"+tableName+".txt";
+                            FileWriterClass.writeInFile(formattedInsertStringInFile,insertFilePath);
+                            System.out.println(insertStringInFile+"Hello string");
+                        }
+                        else{
+                            System.out.println("Expecting "+columnNames.length+" values instead got "+columnValues.length);
+                        }
+                    }
+
+                }
+            }
+            else{
+                System.out.println("Please check insert syntax. Dbname not included.");
+            }
+
+        }
+
+       // System.out.println("insert query"+matchColumnValueResult.find());
+       // System.out.println("----"+"0=> "+matchColumnValueResult.group(0)+"1=> "+matchColumnValueResult.group(1)+"2->"+matchColumnValueResult.group(2));
 
         // Check if Database exists
         // Check if Tabel exists
@@ -119,6 +168,8 @@ VALUES (value1, value2, value3, ...);*/
     public void deleteTable() {
 
     }
+
+
 }
 
 

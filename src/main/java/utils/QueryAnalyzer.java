@@ -2,6 +2,8 @@ package utils;
 
 import dao.DatabaseOperations;
 
+import java.io.IOException;
+
 public class QueryAnalyzer {
 
     // public DatabaseOperations dbOperations;
@@ -10,7 +12,7 @@ public class QueryAnalyzer {
         this.dbOperations=dbOperations;
     }*/
 
-    public  static int splitQuery(String query,DatabaseOperations dbOperations){
+    public  static int splitQuery(String query,DatabaseOperations dbOperations) throws IOException {
         String formattedQuery=removeSemiColon(query);
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
