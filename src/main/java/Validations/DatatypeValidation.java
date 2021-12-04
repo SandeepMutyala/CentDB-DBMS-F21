@@ -35,7 +35,9 @@ public class DatatypeValidation {
         return result;
     }
 
-    public static boolean validateDataType(String columnName, String columnDatatype){
+    public static boolean validateDataTypeWhileInserting(String columnName, String columnValues){
+        // read from the schemDetails file and then get the line where tableName matches with hthe passed tableName
+        // match the column name with the file column Name, also it's datatype with the file read.
         return false;
     }
 }

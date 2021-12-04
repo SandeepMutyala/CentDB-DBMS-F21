@@ -22,6 +22,7 @@ public class Constants {
     public static String DB_TABLE_NAME_INSERT_SEPARATOR_PATTERN=".*insert\\s+into\\s+([a-zA-Z0-9_\\.]*?)($|\\s+)";
     public static String DB_TABLE_NAME_CREATE_SEPARATOR_PATTERN=".*create\\s+table\\s+([a-zA-Z0-9_\\.]*?)\\s+(\\(.*\\))";
     public static String COLUMN_NAME_VALUES_SEPARATOR_PATTERN="\\bINSERT\\s+INTO\\s+\\S+\\s*\\(([^)]+)\\)\\s*VALUES\\s*\\(([^)]+)\\)";
+    public static String DB_TABLE_NAME_SELECT_SEPARATOR_PATTERN="(?<=from)(\\s+[a-zA-Z0-9_.]+\\b)";
 
 
 

@@ -10,7 +10,7 @@ public interface DatabaseOperations{
     void useDb();
     int createTable(String query);
     int insertInTable(String query) throws IOException;
-    void fetchTableRecords();
+    int fetchTableRecords(String query) throws Exception;
     void updateATableRecords();
     void deleteATableRecords();
     void deleteTable();

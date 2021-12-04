@@ -80,7 +80,11 @@ public class Main {
                 break;
             case 6: System.out.println("Insert operation Failed");
                 break;
-            default: System.out.println("Oops! Creation failed");
+            case 7: System.out.println("Fetched records successfully");
+                break;
+            case 8: System.out.println("Failed to fetch records!");
+                break;
+            default: System.out.println("Couldn't perform Operation");
         }
     }
 }

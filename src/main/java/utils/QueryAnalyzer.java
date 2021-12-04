@@ -12,7 +12,7 @@ public class QueryAnalyzer {
         this.dbOperations=dbOperations;
     }*/
 
-    public  static int splitQuery(String query,DatabaseOperations dbOperations) throws IOException {
+    public  static int splitQuery(String query,DatabaseOperations dbOperations) throws Exception {
         String formattedQuery=removeSemiColon(query);
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
@@ -28,7 +28,10 @@ public class QueryAnalyzer {
                 }
                 break;
             case "INSERT":
-                dbOperations.insertInTable(formattedQuery);
+                output=dbOperations.insertInTable(formattedQuery);
+                break;
+            case "SELECT":
+                output=dbOperations.fetchTableRecords(formattedQuery);
                 break;
             default:
         }

@@ -1,2 +1,5 @@
 [User]
 id:INT#firstName:VARCHAR(30)#lastName:VARCHAR(30)#username:VARCHAR(45)#password:VARCHAR(64)#confirm_password:VARCHAR(64)#role:VARCHAR(10)#phone_number:BIGINT(10)#;
+
+[student]
+id:INT#firstName:VARCHAR(30)#lastName:VARCHAR(30)#username:VARCHAR(45)#password:VARCHAR(64)#confirm_password:VARCHAR(64)#role:VARCHAR(10)#phone_number:BIGINT(10)#;
