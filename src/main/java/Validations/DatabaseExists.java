@@ -14,10 +14,11 @@ public class DatabaseExists {
 
         if(!dbName.isEmpty()){
             String dbPath = GlobalSessionDetails.loggedInUsername+"/";
-            String directoryPath=dbPath.concat(dbName);
-
+            String directoryPath=dbPath.concat(dbName)+"/";
+            System.out.println(directoryPath);
             File directory = new File(directoryPath);
             if (directory.exists()){
+            	System.out.println("directory exists");
                 return true;
             }
         }else{

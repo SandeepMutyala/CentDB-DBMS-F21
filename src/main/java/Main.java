@@ -1,4 +1,4 @@
-package com;
+
 import com.user_interface.UserInterface;
 
 public class Main {

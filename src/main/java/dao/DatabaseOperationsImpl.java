@@ -1,11 +1,13 @@
 package dao;
 
 import Validations.DatabaseExists;
+import Validations.DatatypeValidation;
 import Validations.TableExistence;
 import utils.Constants;
 import utils.FileWriterClass;
 import utils.GlobalSessionDetails;
 import utils.SchemaDetails;
+import utils.CreateStructureAndDataExportFile;
 
 import java.io.*;
 import java.util.regex.Matcher;
@@ -42,10 +44,15 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 String permanantDirectoryPath = GlobalSessionDetails.loggedInUsername+ "/".concat(analyseQuery[2]);
                 File permanantDirectory = new File(permanantDirectoryPath);
                 if (permanantDirectory.exists()) {
-                    createDuplicateCopy(directory, permanantDirectory);
+                	System.out.println("The requested Database already exists");
+                    //createDuplicateCopy(directory, permanantDirectory);
+                }else if(!directory.exists()){
+                	directory.createNewFile();
+                }else {
+                	System.out.println("Database created");
                 }
             }
-            System.out.println("print before 49"+isTransaction);
+            
             if (SchemaDetails.insertInSchemaFile(query, isTransaction)) {
                 result = 1;
             }
@@ -56,35 +63,86 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     @Override
     public int createTable(String query, Boolean isTransaction) {
         int result=0;
-        String tableDiectoryPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/";
+        //String tableDiectoryPath = GlobalSessionDetails.loggedInUsername + "/";
         String tablePath="";
-        Pattern tablePattern = Pattern.compile(".*create\\s+table\\s+([a-zA-Z0-9_\\.]*?)($|\\s+)", Pattern.CASE_INSENSITIVE);
+        String tempTablePath = "";
+        String dbName="";
+        String tableName="";
+        String[] columnName;
+        String[] columnDataType;
+
+        //Pattern to get table name and DBname
+        Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_CREATE_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher matchResult = tablePattern.matcher(query);
+
         try{
             if (matchResult.find()) {
                 String[] separateDbtableName=matchResult.group(1).split("\\.");
 
-                // if databse name is not in the query
-                if(separateDbtableName.length<=1){
-                    tablePath=tableDiectoryPath.concat(matchResult.group(1))+".txt";
+                // Primary key is must
+                String[] columnDetails=matchResult.group(2).substring(1,matchResult.group(2).length()-1).split(",");
+                String[] removedPrimaryKeyColumnDetails=new String[columnDetails.length-1];
+                for(int pi=0;pi<columnDetails.length-1;pi++){
+                    removedPrimaryKeyColumnDetails[pi]=columnDetails[pi];
                 }
+                columnDataType=fetchColumnDataType(removedPrimaryKeyColumnDetails);
+                System.out.println(columnDataType[0]);
+                columnName=fetchColumnName(removedPrimaryKeyColumnDetails);
 
-                // if database name is in query
-                if(separateDbtableName.length>1){
-                    tablePath=tableDiectoryPath.concat(separateDbtableName[1])+".txt";
-                }
 
-                //create table file
-                File tableFile = new File(tablePath);
-                    tableFile.createNewFile();
-                    if(SchemaDetails.insertInSchemaFile(query, isTransaction)){
-                        result=3;
+                if(DatatypeValidation.validateTableDataType(columnDataType)){
+                    // if database name is not in the query
+                    if(separateDbtableName.length<=1){
+                        dbName=GlobalSessionDetails.getDbInAction();
+                        tableName=matchResult.group(1);
+                        tempTablePath = GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
+                        tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
+
                     }
+                    // if database name is in query
+                    if(separateDbtableName.length>1){
+                        dbName=separateDbtableName[0];
+                        tableName=separateDbtableName[1];
+                        tempTablePath = GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
+                        tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
+                    }
+                    
+                    
+                    if(isTransaction) {
+                    	if(DatabaseExists.validateDatabaseExistence(dbName)){
+                            //create Temporary Table
+                    		String permanentTablePath = GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName.substring(4)+"/"+tableName)+".txt";
+                    		File permanentTable = new File(permanentTablePath);
+                    		if(permanentTable.exists()) {
+                    			File tempTable = new File(tempTablePath);
+                    			FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
+                    		}else {
+                            result=createTableFile(dbName,tempTablePath,tableName,columnDataType,columnName,query,isTransaction);
+                    		}
+                        }
+                    	else {
+                    		System.out.println("Please create or choose a Database first");
+                    	}
+                    }else {
+                    	if(DatabaseExists.validateDatabaseExistence(dbName)){
+                            //create Table
+                            result=createTableFile(dbName,tablePath,tableName,columnDataType,columnName,query,isTransaction);
+                        }
+                    	else {
+                    		System.out.println("Please create or choose a Database first");
+                    	}
+                    }
+                    
+                }
+                else{
+                    System.out.println("Please select valid datatype");
+                }
             }
             else{
                 System.out.println("Please check the syntax for table creation");
             }
-        }catch(Exception ex){
+        }
+        catch(Exception ex){
             System.out.println("Please check the syntax for table creation"+ex);
             result=4;
         }finally {
@@ -92,20 +150,67 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         }
     }
 
+    public static String[] fetchColumnDataType(String[] columnDetails){
+        String[] columnsDataType=new String[columnDetails.length];
+        for(int i=0;i<columnDetails.length;i++){
 
-
-    @Override
-    public void useDb() {
-
+            String[] columnData=columnDetails[i].trim().split(" ");
+                columnsDataType[i]=columnData[1];
+        }
+        return columnsDataType;
     }
 
+    public static String[] fetchColumnName(String[] columnDetails){
+        String[] columnName=new String[columnDetails.length];
+        for(int i=0;i<columnDetails.length;i++){
+            String[] columnData=columnDetails[i].trim().split(" ");
+            columnName[i]=columnData[0];
+        }
+        return columnName;
+    }
+
+    public int createTableFile(String dbName,String tablePath,String tableName,String[] columnDataType,String[] columnName, String query,Boolean isTransaction) throws IOException {
+        String tableDiectoryPath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/";
+        File tableFile = new File(tablePath);
+        int result=0;
+        if(!tableFile.isFile()){
+            tableFile.createNewFile();
+            if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,tableDiectoryPath)){
+                // write logic to extract column and datatype from query
+                if(SchemaDetails.createSchemaFile(tableDiectoryPath)){
+                    String formattedColumnDetailsInFile=mergeColumnNameAndValue(columnName,columnDataType);
+                    FileWriterClass.writeInFile("["+tableName+"]",tableDiectoryPath+"/schemaDetails.txt");
+                    SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile,isTransaction);
+
+                }
+                result=3;
+            }
+        }else{
+            System.out.println("Table Already exists");
+        }
+
+        return result;
+    }
+
+    public String mergeColumnNameAndValue(String[] columnNames,String[] columnValues){
+        StringBuilder insertStringInFile=new StringBuilder();
+        for(int i=0;i<columnNames.length;i++){
+            insertStringInFile.append(columnNames[i]+":"+columnValues[i]+"#");
+        }
+        String formattedInsertStringInFile = insertStringInFile.toString().replaceAll(" ", "");
+        return formattedInsertStringInFile;
+    }
+
+
+
     @Override
-    public void insertInTable(String query, Boolean isTransaction) throws IOException{
-        String dbPath="";
+    public int insertInTable(String query, Boolean isTranction) throws IOException{
+        int result=0;
+        String dbName="";
         String tableName="";
 
         // to spearate table and database name pattern
-        Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
+        Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_INSERT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher matchTableResult = tablePattern.matcher(query);
 
         // to fetch column name from the query pattern
@@ -113,13 +218,16 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         Matcher matchColumnValueResult = ColumnValuePattern.matcher(query);
 
         if(matchTableResult.find()){
-            // System.out.println(matchTableResult.group(1)+"Group tabel name");
+            // System.out.println(matchTableResult.group(1)+"Group table name");
             String[] separateDbtableName=matchTableResult.group(1).split("\\.");
-            if(separateDbtableName.length==2){
-                if(DatabaseExists.validateDatabaseExistence(separateDbtableName[0]) && TableExistence.checkIfTableExists(separateDbtableName[1])){
+            dbName=separateDbtableName[0];
+            tableName=separateDbtableName[1];
 
-                    dbPath=separateDbtableName[0];
-                    tableName=separateDbtableName[1];
+            if(separateDbtableName.length==2){
+                if(DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName,tableName)){
+
+
+                    String insertFilePath=GlobalSessionDetails.loggedInUsername+"/"+dbName+"/"+tableName+".txt";
 
                     if(matchColumnValueResult.find()){
                         String[] columnNames=matchColumnValueResult.group(1).split(",");
@@ -127,16 +235,13 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
                         // checking if values and table column length entered by user is correct or not
                         if(columnNames.length==columnValues.length){
-                            StringBuilder insertStringInFile=new StringBuilder();
-                            for(int i=0;i<columnNames.length;i++){
-                                insertStringInFile.append(columnNames[i]+":"+columnValues[i]+"#");
-                            }
-                            String formattedInsertStringInFile = insertStringInFile.toString().replaceAll(" ", "");
-                            String insertFilePath=GlobalSessionDetails.loggedInUsername+"/"+dbPath+"/"+tableName+".txt";
+                            String formattedInsertStringInFile=mergeColumnNameAndValue(columnNames,columnValues);
                             FileWriterClass.writeInFile(formattedInsertStringInFile,insertFilePath);
-                            System.out.println(insertStringInFile+"Hello string");
+                            result=5;
+                            //System.out.println(insertStringInFile+"Hello string");
                         }
                         else{
+                            result=6;
                             System.out.println("Expecting "+columnNames.length+" values instead got "+columnValues.length);
                         }
                     }
@@ -144,18 +249,15 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 }
             }
             else{
+                result=6;
                 System.out.println("Please check insert syntax. Dbname not included.");
             }
 
         }
 
-       // System.out.println("insert query"+matchColumnValueResult.find());
-       // System.out.println("----"+"0=> "+matchColumnValueResult.group(0)+"1=> "+matchColumnValueResult.group(1)+"2->"+matchColumnValueResult.group(2));
-
-        // Check if Database exists
-        // Check if Tabel exists
-        // Map column name with values , the order it si coming in and then store in txt file
+        return result;
     }
+
 
     @Override
     public void fetchTableRecords() {
@@ -176,6 +278,12 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     public void deleteTable() {
 
     }
+
+	@Override
+	public void useDb() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

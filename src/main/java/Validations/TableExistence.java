@@ -8,10 +8,10 @@ public class TableExistence {
 
     private TableExistence(){}
 
-    public static boolean checkIfTableExists(String tableName){
+    public static boolean checkIfTableExists(String dbName,String tableName){
 
         if (!tableName.isEmpty()){
-            String tablePath = GlobalSessionDetails.loggedInUsername+"/"+GlobalSessionDetails.getDbInAction() + "/" + tableName + ".txt";
+            String tablePath = GlobalSessionDetails.loggedInUsername+"/"+dbName + "/" + tableName + ".txt";
             File filePath = new File(tablePath);
 
             Boolean fileExist = filePath.isFile();

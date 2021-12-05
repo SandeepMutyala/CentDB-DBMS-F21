@@ -1,0 +1,3 @@
+create database sampada;
+create table hello (a int, b varchar);
+a:int#;

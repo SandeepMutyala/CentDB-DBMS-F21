@@ -1,0 +1,4 @@
+create table hello (a int, b varchar);
+create table hello (a int, b varchar);
+create table hello (a int, b varchar);
+create table hello (a int, b varchar);

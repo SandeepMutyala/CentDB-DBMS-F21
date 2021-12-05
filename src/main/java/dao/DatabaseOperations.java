@@ -9,7 +9,7 @@ public interface DatabaseOperations{
     int createDb(String query, Boolean isTransaction) throws IOException;
     void useDb();
     int createTable(String query, Boolean isTransaction);
-    void insertInTable(String query, Boolean isTransaction) throws IOException;
+    int insertInTable(String query, Boolean isTransaction) throws IOException;
     void fetchTableRecords();
     void updateATableRecords();
     void deleteATableRecords();

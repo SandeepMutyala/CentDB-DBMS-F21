@@ -23,9 +23,8 @@ public class SchemaDetails {
 
     public static boolean insertInSchemaFile(String query, Boolean isTransaction) throws IOException {
         boolean result = false;
-        System.out.println("in 26");
         String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/";
-        System.out.println("istr "+isTransaction);
+        
         if(isTransaction) {
 
             completeSchemaPath += "tempStructureAndDataExport.txt";
@@ -33,9 +32,8 @@ public class SchemaDetails {
             String permanentExportPath= GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/StructureAndDataExport.txt";
             File permanentExportFile = new File("StructureAndDataExport.txt");
             File tempExportFile = new File("tempStructureAndDataExport.txt");
-            System.out.println("line 35"+!tempExportFile.exists());
+            
             if(!tempExportFile.exists()){
-                System.out.println("in" + completeSchemaPath);
                 tempExportFile.createNewFile();
             }
             if(permanentExportFile.exists()) {
@@ -45,7 +43,7 @@ public class SchemaDetails {
             completeSchemaPath += "StructureAndDataExport.txt";
         }
         try {
-            System.out.println("in try"+ completeSchemaPath);
+            
             FileWriterClass.writeInFile(query.concat(";"),completeSchemaPath);
             result=true;
         } catch (Exception e) {
