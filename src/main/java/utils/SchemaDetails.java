@@ -23,35 +23,30 @@ public class SchemaDetails {
 
     public static boolean insertInSchemaFile(String query, Boolean isTransaction) throws IOException {
         boolean result = false;
-        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/";
-        
-        if(isTransaction) {
-
-            completeSchemaPath += "tempStructureAndDataExport.txt";
-            System.out.println(completeSchemaPath);
-            String permanentExportPath= GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/StructureAndDataExport.txt";
-            File permanentExportFile = new File("StructureAndDataExport.txt");
-            File tempExportFile = new File("tempStructureAndDataExport.txt");
-            
-            if(!tempExportFile.exists()){
-                tempExportFile.createNewFile();
-            }
-            if(permanentExportFile.exists()) {
-                createDuplicateCopy(tempExportFile, permanentExportFile);
-            }
-        } else {
+        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction + "/";
+        if (isTransaction) {
             completeSchemaPath += "StructureAndDataExport.txt";
+            System.out.println(completeSchemaPath);
+            String permanentExportPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction.substring(4) + "/StructureAndDataExport.txt";
+            File permanentExportFile = new File(permanentExportPath);
+            File tempExportFile = new File(completeSchemaPath);
+
+//            if(!tempExportFile.exists()){
+//                tempExportFile.createNewFile();
+//            }
+            if (permanentExportFile.exists()) {
+                createDuplicateCopy(tempExportFile, permanentExportFile);
+            } else {
+                try {
+                    FileWriterClass.writeInFile(query.concat(";"), completeSchemaPath);
+                    result = true;
+                } catch (Exception e) {
+                    System.out.println("An error occurred while inserting into schema");
+                    e.printStackTrace();
+                }
+            }
         }
-        try {
-            
-            FileWriterClass.writeInFile(query.concat(";"),completeSchemaPath);
-            result=true;
-        } catch (Exception e) {
-            System.out.println("An error occurred while inserting into schema");
-            e.printStackTrace();
-        }finally {
-            return result;
-        }
+        return result;
     }
 
 

@@ -13,10 +13,11 @@ public class QueryAnalyzer {
     }*/
 
     public  static int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws IOException {
-        String formattedQuery=removeSemiColon(query);
+        String formattedQuery = isTransaction ? query : removeSemiColon(query);
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
         // for(int i=0;i<analyseQuery.length;i++){
+        System.out.println("formattedQ  "+formattedQuery);
         switch(analyseQuery[0].toUpperCase()){
             case "CREATE":
                 if(analyseQuery[1].equalsIgnoreCase("DATABASE") || analyseQuery[1].equalsIgnoreCase("SCHEMA")){
@@ -24,7 +25,8 @@ public class QueryAnalyzer {
 
                 }
                 if(analyseQuery[1].equalsIgnoreCase("TABLE")){
-                    output=dbOperations.createTable(formattedQuery, isTransaction);
+                    System.out.println("in");
+                    output = dbOperations.createTable(formattedQuery, isTransaction);
                 }
                 break;
             case "INSERT":

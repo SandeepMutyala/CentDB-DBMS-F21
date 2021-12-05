@@ -9,41 +9,44 @@ import java.util.*;
 
 public class TransactionManagement {
     static Scanner sc = new Scanner(System.in);
-
     public static Boolean executeQuery() {
     	DatabaseOperations dbOperations = new DatabaseOperationsImpl();
         System.out.println("Enter your Query!");
-        String query = null;
-        query = sc.nextLine().toLowerCase();
-        if (query.contains("start transaction")) {
-            System.out.println("Transaction started!");
-            while (query != "commit") {
-                System.out.println("Please enter a query!");
-                query = sc.nextLine().toLowerCase();
-                if(query == "rollback") {
-                	//write the logic for rollback
+        String queryString = sc.nextLine().toLowerCase();
+        if (isQueryFormatValid(queryString)) {
+            List<String> queryList = Arrays.asList(queryString.split(";"));
+            if (queryList.size() > 1) {
+                System.out.println("Transaction started!");
+                for (String query : queryList) {
+                    query = query.trim();
+                    if (query.equals("rollback")) {
+                        //write the logic for rollback
+                    }
+                    if (query.equals("commit")) {
+                        //overwrite the permanent files with the temporary files
+                    }
+                    try {
+                        queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                if(query == "commit") {
-                	//overwrite the permanent files with the temporary files
-                }
-                
+            } else {
                 try {
-                	System.out.println(query);
-                    queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
+                    System.out.println(queryString);
+                    queryOutputAnalysis(QueryAnalyzer.splitQuery(queryString, dbOperations, false));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+            return true;
         }
-        else {
-        	try {
-        		System.out.println(query);
-                queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, false));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return true;
+        System.out.println("Query Invalid");
+        return false;
+    }
+
+    private static Boolean isQueryFormatValid(String query) {
+        return query.endsWith(";");
     }
 
     public static void queryOutputAnalysis(int result) {
