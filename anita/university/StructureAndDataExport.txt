@@ -1,0 +1,2 @@
+create database university;
+create table university.user ( id int not null, firstname varchar(30) not null, lastname varchar(30) not null, username varchar(45) not null, password varchar(64) not null, confirm_password varchar(64) not null, role varchar(10) not null, phone_number bigint(10) not null, primary key (id));

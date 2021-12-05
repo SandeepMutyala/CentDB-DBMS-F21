@@ -223,6 +223,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
 	@Override
 	public int insertInTable(String query, Boolean isTransaction) throws IOException{
+		System.out.println(query);
 		int result=0;
 		String dbName="";
 		String tableName="";
@@ -257,6 +258,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 										.concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
 								File permanentTable = new File(permanentTablePath);
 								if (permanentTable.exists()) {
+									System.out.println(formattedInsertStringInFile);
 									File tempTable = new File(insertFilePath);
 									FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
 									FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);

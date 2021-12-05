@@ -15,6 +15,7 @@ public class FileWriterClass {
         }
     }
     public static void createDuplicateCopy (File fileOne, File fileTwo) throws IOException {
+    	System.out.print("inside create duplicate");
         FileInputStream file2= new FileInputStream(fileTwo);
         FileOutputStream file1 = new FileOutputStream(fileOne);
 

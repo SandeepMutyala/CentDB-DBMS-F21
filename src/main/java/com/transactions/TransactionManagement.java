@@ -14,16 +14,23 @@ public class TransactionManagement {
         System.out.println("Enter your Query!");
         String queryString = sc.nextLine().toLowerCase();
         if (isQueryFormatValid(queryString)) {
-            List<String> queryList = Arrays.asList(queryString.split(";"));
-            if (queryList.size() > 1) {
+        	String[] queries = queryString.split(";");
+        	System.out.println(queries.length);
+            //List<String> queryList = Arrays.asList(queryString.split(";"));
+            if (queries.length > 1) {
                 System.out.println("Transaction started!");
-                for (String query : queryList) {
+                for (String query : queries) {
                     query = query.trim();
                     if (query.equals("rollback")) {
                         TransactionResult.rollback();
                     }
                     if (query.equals("commit")) {
-                        TransactionResult.commit();
+                        try {
+							TransactionResult.commit();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
                     }
                     try {
                         queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
