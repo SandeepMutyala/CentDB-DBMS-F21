@@ -20,6 +20,8 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     * result=6, Insert Failed
     * result= 7, Select success
     * result= 8, Select failed
+    * result= 9, update success
+    * result = 10, update failed
     * */
     static Formatter  fmt = new Formatter();
     @Override
@@ -163,7 +165,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
         }
         String formattedInsertStringInFile = insertStringInFile.toString().replaceAll(" ", "");
-        formattedInsertStringInFile = insertStringInFile.toString().replaceAll(";", "");
+        formattedInsertStringInFile = formattedInsertStringInFile.replaceAll(";", "");
         return formattedInsertStringInFile;
     }
 
@@ -233,72 +235,88 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     // Select * from schemaName.tableName where
     @Override
     public int fetchTableRecords(String query) throws Exception {
-        int result=0;
-        String dbName="";
-        String tableName="";
+        int result = 0;
+        String dbName = "";
+        String tableName = "";
         String[] columnInQuery;
-        boolean validateProvidedLegitColumns=true;
+        boolean validateProvidedLegitColumns = true;
 
         // Logic to extract table name and database name
-        Pattern patternDBTable=Pattern.compile(Constants.DB_TABLE_NAME_SELECT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
+        Pattern patternDBTable = Pattern.compile(Constants.DB_TABLE_NAME_SELECT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher matcherDBTable = patternDBTable.matcher(query);
 
         // Logic to extract columns
         Pattern columnsPattern = Pattern.compile("select(.*?)from", Pattern.CASE_INSENSITIVE);
         Matcher columnsMatcher = columnsPattern.matcher(query);
 
-        if(matcherDBTable.find() && columnsMatcher.find()){
-            String[] separateDbtableName=matcherDBTable.group(0).split("\\.");
+        if (matcherDBTable.find() && columnsMatcher.find()) {
+            String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
 
             // if query contains dbName and table name
-            if(separateDbtableName.length==2){
-                dbName=separateDbtableName[0].trim();
-                tableName=separateDbtableName[1].trim();
-                columnInQuery=columnsMatcher.group(1).split(",");
-                List<String> totalColumn=Arrays.asList(readColumnsOfTable(dbName,tableName)); // total columns present in Table
-
-                // to check if column provided by user matches with table columns in DB
-                if(columnInQuery.length>1){
-                    for(int i=0;i<columnInQuery.length;i++){
-                        if(!totalColumn.contains(columnInQuery[i].trim())){
-                            validateProvidedLegitColumns=false;
-                            break;
-                        }
-                    }
-                }
-
-                // looping to print the fetched records
-                if(validateProvidedLegitColumns){
-                    // write a logic to read from the file
-                    List<List<String>> tableRecords=readFile(dbName,tableName,columnInQuery);
-                    fmt.format("\n");
-                    for (int i = 0; i < tableRecords.size(); i++) {
-                        for(int j=0;j<tableRecords.get(i).size();j++){
-                            fmt.format("%30s", tableRecords.get(i).get(j));
-                        }
-                        fmt.format("\n");
-                    }
-                    System.out.println(fmt);
-                    result=7;
-                }else{
-                    result=8;
-                    System.out.println("Provided Columns does not exists in table");
-                }
-            }
-            else{
-                result=8;
+            if (separateDbtableName.length == 2) {
+                dbName = separateDbtableName[0].trim();
+                tableName = separateDbtableName[1].trim();
+            } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {  // to ceck if user used useDB opeartion
+                dbName = GlobalSessionDetails.getDbInAction().trim();
+                tableName = matcherDBTable.group(0).trim();
+            } else {
+                result = 8;
                 System.out.println("Either provide dbName or use useDB operation");
             }
+
+            if (!dbName.isEmpty() && !tableName.isEmpty()) {
+
+                // checking database and table existence added
+                if (DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName, tableName)) {
+                    columnInQuery = columnsMatcher.group(1).split(",");
+                    List<String> totalColumn = Arrays.asList(readColumnsOfTable(dbName, tableName)); // total columns present in Table
+
+                    if(!columnInQuery[0].trim().equals("*")){
+                        validateProvidedLegitColumns=validateIfColumnIsInTable(columnInQuery,totalColumn);
+                    }
+
+                    // looping to print the fetched records
+                    if (validateProvidedLegitColumns) {
+                        // write a logic to read from the file
+                        List<List<String>> tableRecords = readFile(dbName, tableName, columnInQuery);
+                        fmt.format("\n");
+                        for (int i = 0; i < tableRecords.size(); i++) {
+                            for (int j = 0; j < tableRecords.get(i).size(); j++) {
+                                fmt.format("%30s", tableRecords.get(i).get(j));
+                            }
+                            fmt.format("\n");
+                        }
+                        System.out.println(fmt);
+                        result = 7;
+                    } else {
+                        result = 8;
+                        System.out.println("Provided Columns does not exists in table");
+                    }
+                }
+            }
+
         }
-        else{
-            result=8;
+        else {
+            result = 8;
             System.out.println("Please provide valid select syntax");
         }
         return result;
     }
 
 
-    public List<List<String>> readFile(String dbName, String tableName, String[]columnsInQuery) throws Exception {
+    public boolean validateIfColumnIsInTable(String[] columnInQuery,List<String> totalColumn){
+        // to check if column provided by user matches with table columns in DB
+        if (columnInQuery.length > 0) {  //columnInQuery.length > 1
+            for (int i = 0; i < columnInQuery.length; i++) {
+                if (!totalColumn.contains(columnInQuery[i].trim())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public List<List<String>> readFile(String dbName, String tableName, String[] columnsInQuery) throws Exception {
         String path = GlobalSessionDetails.getLoggedInUsername() + "/" + dbName + "/" + tableName + ".txt";
         List<List<String>> tableRecords = new ArrayList<List<String>>();
        // String[]columnsInQuery= Arrays.asList();
@@ -377,10 +395,137 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         return columnName;
     }
 
+
+    /*
+    UPDATE table_name SET column1 = value1 WHERE condition;
+    UPDATE university.user SET firstName = "Anita" WHERE id=1;
+    */
+
     @Override
-    public void updateATableRecords() {
+    public int updateATableRecords(String query) throws Exception {
+        int result=0;
+        String dbName="";
+        String tableName="";
+        String columnInQuery;
+        String whereColumnName="";
+        String whereColumnValue="";
+        String columnNewValue="";
+        String tmpFilePath="";
+        String updateTablePath="";
+        String oldValue="";
+        boolean validateProvidedLegitColumns=false;
+
+        // Pattern to extract schema and table name
+        Pattern patternDBTable = Pattern.compile("(?<=update)(.*)(?=set)", Pattern.CASE_INSENSITIVE);
+        Matcher matcherDBTable = patternDBTable.matcher(query);
+
+        // to extract column and column new value name
+        Pattern columnsPattern = Pattern.compile("(?<=set\\s).*(?=\\swhere)", Pattern.CASE_INSENSITIVE);
+        Matcher columnsMatcher = columnsPattern.matcher(query);
+
+        //to extract where condition
+        Pattern wherePattern = Pattern.compile("(?<=where\\s).*", Pattern.CASE_INSENSITIVE);
+        Matcher whereMatcher = wherePattern.matcher(query);
+
+            if (matcherDBTable.find()) {
+                String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
+
+                // to check if user entered bdb and table name in query. if not then check if global session contains value, if not then SOp, db absent
+                if (separateDbtableName.length == 2) {
+                    dbName = separateDbtableName[0].trim();
+                    tableName = separateDbtableName[1].trim();
+
+                }else if(!GlobalSessionDetails.getDbInAction().isEmpty()){
+                    dbName = GlobalSessionDetails.getDbInAction().trim();
+                    tableName = matcherDBTable.group(0).trim();
+                }
+                else{
+                    result = 10;
+                    System.out.println("Either provide dbName or use useDB operation");
+                }
+
+
+                if(!tableName.isEmpty() && !dbName.isEmpty()){
+
+                    // check if db and table exists
+                    if(DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName, tableName)){
+
+                            // set column value
+                            if(columnsMatcher.find()){
+                               // System.out.println("Grooup 0 columns"+columnsMatcher.group(0));
+                                columnInQuery = columnsMatcher.group(0).trim().split("=")[0];
+                                columnNewValue = columnsMatcher.group(0).trim().split("=")[1].trim();
+                                //String[] validateColProvidedArray=[columnInQuery];
+                                List<String> totalColumn = Arrays.asList(readColumnsOfTable(dbName, tableName)); // total columns present in Table
+                                validateProvidedLegitColumns=validateIfColumnIsInTable(new String[]{columnInQuery},totalColumn);
+
+                                if(whereMatcher.find() && validateProvidedLegitColumns){
+                                    whereColumnName = whereMatcher.group(0).trim().split("=")[0];
+                                    whereColumnValue = whereMatcher.group(0).trim().split("=")[1].trim();
+
+                                    updateTablePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+tableName+".txt";
+                                    tmpFilePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+tableName+"_tmp.txt";
+                                    File updateFile = new File(updateTablePath);
+
+                                    // creating a new file to write everything into it with updated value
+                                    BufferedReader br = new BufferedReader(new FileReader(updateTablePath));
+                                    BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFilePath));
+
+                                    String line = br.readLine();
+                                    while(line!=null){
+                                        StringBuilder newLine=new StringBuilder();
+                                        String[] splitSt = line.split("#");
+                                        boolean filterRowFound=false;
+                                        for (int i = 0; i < splitSt.length; i++) {
+                                            String[] columnNameValueSeparator = splitSt[i].trim().split(":");
+
+                                            if(columnNameValueSeparator.length>0){
+                                               if(whereColumnName.trim().equals(columnNameValueSeparator[0]) && whereColumnValue.trim().equals(columnNameValueSeparator[1])){
+                                                   filterRowFound=true;
+                                                   oldValue=columnNameValueSeparator[1];  // loggers if want to display value changed while updating
+                                               }
+                                               if(filterRowFound && columnInQuery.trim().equals(columnNameValueSeparator[0])){
+                                                   newLine.append(columnNameValueSeparator[0]+":"+columnNewValue+"#");
+                                               }
+                                               else{
+                                                   newLine.append(splitSt[i]+"#");
+                                               }
+                                            }
+
+                                           // System.out.println("newLine.substring(0,newLine.length()-1) "+ newLine.substring(0,newLine.length()-1));
+
+                                            //newLine.setLength(0);
+                                        }
+                                        bw.append(newLine.substring(0,newLine.length()-1));
+                                        bw.newLine();
+                                        line = br.readLine();
+                                    }
+
+                                    bw.close();
+                                    br.close();
+
+                                    //delete the actual data file and renaming the temp file to actual file
+                                    updateFile.delete();
+                                    File newfile = new File(tmpFilePath);
+                                    newfile.renameTo(updateFile);
+                                }
+                            }
+
+                    }
+
+
+                    result=9;
+                }
+            }
+            else{
+                result=10;
+                System.out.println("Please enter valid update syntax");
+            }
+        return result;
 
     }
+
+
 
     @Override
     public void deleteATableRecords() {

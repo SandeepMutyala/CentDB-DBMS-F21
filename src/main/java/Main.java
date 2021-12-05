@@ -84,6 +84,10 @@ public class Main {
                 break;
             case 8: System.out.println("Failed to fetch records!");
                 break;
+            case 9: System.out.println("Updated records successfully");
+                break;
+            case 10: System.out.println("Failed to update records!");
+                break;
             default: System.out.println("Couldn't perform Operation");
         }
     }

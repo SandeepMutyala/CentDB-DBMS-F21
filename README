@@ -1,6 +1,5 @@
 Syntax without use Table
 
-
 Database creation
 create database university;
 
@@ -15,3 +14,8 @@ SELECT * from university.user;
 
 Select when column name is specified
 SELECT firstName, lastName, username, password from university.user;
+
+
+Update Syntax:
+UPDATE table_name SET column1 = value1 WHERE condition;
+UPDATE university.user SET firstName = "Anita" WHERE id=1;

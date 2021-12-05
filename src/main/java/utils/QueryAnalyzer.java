@@ -33,6 +33,9 @@ public class QueryAnalyzer {
             case "SELECT":
                 output=dbOperations.fetchTableRecords(formattedQuery);
                 break;
+            case "UPDATE":
+                output=dbOperations.updateATableRecords(formattedQuery);
+                break;
             default:
         }
             /*if(analyseQuery[i].equalsIgnoreCase("create")){
