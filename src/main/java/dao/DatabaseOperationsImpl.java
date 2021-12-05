@@ -10,34 +10,32 @@ import utils.SchemaDetails;
 import utils.CreateStructureAndDataExportFile;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Formatter;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static utils.FileWriterClass.createDuplicateCopy;
 
 public class DatabaseOperationsImpl implements DatabaseOperations {
+	static Formatter fmt = new Formatter();
 	/*
 	 * result=1, db successfully created result=2, db already exists result=3, Table
 	 * created successfully result=4, Table creation failed
 	 */
 	@Override
-	public int createDb(String query, Boolean isTransaction) throws IOException {
-		int result = 0;
-		String[] analyseQuery = query.split(" ");
-
+	public  int createDb(String query, Boolean isTransaction) throws IOException {
+		int result=0;
+		String[] analyseQuery=query.split(" ");
 		String dbPath = isTransaction ? GlobalSessionDetails.loggedInUsername + "/temp"
 				: GlobalSessionDetails.loggedInUsername + "/";
-		String directoryPath = dbPath.concat(analyseQuery[2]);
+		String directoryPath=dbPath.concat(analyseQuery[2]);
 		GlobalSessionDetails.dbInAction = isTransaction ? "temp" + analyseQuery[2] : analyseQuery[2];
-		/*
-		 * if(analyseQuery[2].substring(analyseQuery[2].length() - 1).equals(";")){
-		 * directoryPath =
-		 * dbPath.concat(analyseQuery[2].substring(0,analyseQuery[2].length()-1)); }
-		 * else{ directoryPath=dbPath.concat(analyseQuery[2]); }
-		 */
-		// String fileName = id + getTimeStamp() + ".txt";
+
 		File directory = new File(directoryPath);
-		if (!directory.exists()) {
+		if (!directory.exists()){
 			directory.mkdirs();
 			if (isTransaction) {
 				String permanantDirectoryPath = GlobalSessionDetails.loggedInUsername + "/".concat(analyseQuery[2]);
@@ -51,12 +49,12 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 					System.out.println("Database created");
 				}
 			}
-
-			if (SchemaDetails.insertInSchemaFile(query, isTransaction)) {
-				result = 1;
+			CreateStructureAndDataExportFile.structureAndDataExportFileCreation(directoryPath);
+			if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,directoryPath)){
+				result=1;
 			}
 		}
-		return 2;
+		return result;
 	}
 
 	@Override
@@ -103,7 +101,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 					}
 					// if database name is in query
 					if (separateDbtableName.length > 1) {
-						dbName = separateDbtableName[0];
+						dbName = isTransaction? "temp"+separateDbtableName[0] : separateDbtableName[0];
 						tableName = separateDbtableName[1];
 						tempTablePath = GlobalSessionDetails.getLoggedInUsername()
 								.concat("/" + dbName + "/" + tableName) + ".txt";
@@ -118,12 +116,12 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 									.concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
 							File permanentTable = new File(permanentTablePath);
 							if (permanentTable.exists()) {
+								System.out.println("create");
 								File tempTable = new File(tempTablePath);
 								FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
-							} else {
-								result = createTableFile(dbName, tempTablePath, tableName, columnDataType, columnName,
-										query, isTransaction);
 							}
+							result = createTableFile(dbName, tempTablePath, tableName, columnDataType, columnName,
+									query, isTransaction);
 						} else {
 							System.out.println("Please create or choose a Database first");
 						}
@@ -170,76 +168,90 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 		return columnName;
 	}
 
-	public int createTableFile(String dbName, String tablePath, String tableName, String[] columnDataType,
-			String[] columnName, String query, Boolean isTransaction) throws IOException {
-		String tableDiectoryPath = GlobalSessionDetails.getLoggedInUsername() + "/" + dbName + "/";
+	public int createTableFile(String dbName,String tablePath,String tableName,String[] columnDataType,String[] columnName, String query, Boolean isTransaction) throws IOException {
+		String tableDiectoryPath=GlobalSessionDetails.getLoggedInUsername()+"/" + dbName+"/";
+		System.out.println("tableDiectoryPath");
 		File tableFile = new File(tablePath);
-		int result = 0;
-		if (!tableFile.isFile()) {
+		int result=0;
+		System.out.println("in create table line 172"+ tableFile.isFile());
+		if(!tableFile.isFile()){
 			tableFile.createNewFile();
-			if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, tableDiectoryPath)) {
+			if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,tableDiectoryPath)){
+				System.out.println("in create table line 175");
 				// write logic to extract column and datatype from query
-				if (SchemaDetails.createSchemaFile(tableDiectoryPath)) {
-					String formattedColumnDetailsInFile = mergeColumnNameAndValue(columnName, columnDataType);
-					FileWriterClass.writeInFile("[" + tableName + "]", tableDiectoryPath + "/schemaDetails.txt");
-					SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile, isTransaction);
+				if(SchemaDetails.createSchemaFile(tableDiectoryPath)){
+					String formattedColumnDetailsInFile=mergeColumnNameAndValue(columnName,columnDataType,"CREATE");
+					FileWriterClass.writeInFile("["+tableName.trim().toLowerCase()+"]",tableDiectoryPath+"/schemaDetails.txt");
+					SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile,tableDiectoryPath, isTransaction);
 
 				}
-				result = 3;
+				result=3;
 			}
-		} else {
-			System.out.println("Table Already exists");
-		}
+		}else if (isTransaction) {
+				if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, tableDiectoryPath)) {
+					System.out.println("in create table line 175");
+					// write logic to extract column and datatype from query
+					if (SchemaDetails.createSchemaFile(tableDiectoryPath)) {
+						String formattedColumnDetailsInFile = mergeColumnNameAndValue(columnName, columnDataType, "CREATE");
+						FileWriterClass.writeInFile("[" + tableName.trim().toLowerCase() + "]", tableDiectoryPath + "/schemaDetails.txt");
+						SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile, tableDiectoryPath, isTransaction);
 
+					}
+				}
+				result = 3;
+			} else {
+			System.out.println("Table Already exists");
+			}
 		return result;
 	}
 
-	public String mergeColumnNameAndValue(String[] columnNames, String[] columnValues) {
-		StringBuilder insertStringInFile = new StringBuilder();
-		for (int i = 0; i < columnNames.length; i++) {
-			insertStringInFile.append(columnNames[i] + ":" + columnValues[i] + "#");
+	public String mergeColumnNameAndValue(String[] columnNames,String[] columnValues,String operationType){
+		StringBuilder insertStringInFile=new StringBuilder();
+		for(int i=0;i<columnNames.length;i++){
+			if(i==columnNames.length-1){
+				insertStringInFile.append(columnNames[i]+":"+columnValues[i]);
+			}
+			else{
+				insertStringInFile.append(columnNames[i]+":"+columnValues[i]+"#");
+			}
+
 		}
 		String formattedInsertStringInFile = insertStringInFile.toString().replaceAll(" ", "");
+		formattedInsertStringInFile = insertStringInFile.toString().replaceAll(";", "");
 		return formattedInsertStringInFile;
 	}
 
 	@Override
-	public int insertInTable(String query, Boolean isTransaction) throws IOException {
-		int result = 0;
-		String dbName = "";
-		String tableName = "";
+	public int insertInTable(String query, Boolean isTransaction) throws IOException{
+		int result=0;
+		String dbName="";
+		String tableName="";
+		String schemaDetailPath="";
 
 		// to spearate table and database name pattern
-		Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_INSERT_SEPARATOR_PATTERN,
-				Pattern.CASE_INSENSITIVE);
+		Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_INSERT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
 		Matcher matchTableResult = tablePattern.matcher(query);
 
 		// to fetch column name from the query pattern
-		Pattern ColumnValuePattern = Pattern.compile(Constants.COLUMN_NAME_VALUES_SEPARATOR_PATTERN,
-				Pattern.CASE_INSENSITIVE);
+		Pattern ColumnValuePattern = Pattern.compile(Constants.COLUMN_NAME_VALUES_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
 		Matcher matchColumnValueResult = ColumnValuePattern.matcher(query);
+		//System.out.println("Q"+matchColumnValueResult.group(1));
+		if(matchTableResult.find()){
+			System.out.println("221");
+			String[] separateDbtableName=matchTableResult.group(1).split("\\.");
 
-		if (matchTableResult.find()) {
-			// System.out.println(matchTableResult.group(1)+"Group table name");
-			String[] separateDbtableName = matchTableResult.group(1).split("\\.");
-			dbName = separateDbtableName[0];
-			tableName = separateDbtableName[1];
+			if(separateDbtableName.length==2){
+				dbName=isTransaction? "temp"+separateDbtableName[0] : separateDbtableName[0];
+				tableName=separateDbtableName[1];
 
-			if (separateDbtableName.length == 2) {
-				if (DatabaseExists.validateDatabaseExistence(dbName)
-						&& TableExistence.checkIfTableExists(dbName, tableName)) {
-
-					String insertFilePath = isTransaction
-							? GlobalSessionDetails.loggedInUsername + "/" + "temp" + dbName + "/" + tableName + ".txt"
-							: GlobalSessionDetails.loggedInUsername + "/" + dbName + "/" + tableName + ".txt";
-
-					if (matchColumnValueResult.find()) {
-						String[] columnNames = matchColumnValueResult.group(1).split(",");
-						String[] columnValues = matchColumnValueResult.group(2).split(",");
-
+				if(DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName,tableName)){
+					String insertFilePath = GlobalSessionDetails.loggedInUsername + "/" + dbName + "/" + tableName + ".txt";
+					if(matchColumnValueResult.find()){
+						String[] columnNames=matchColumnValueResult.group(1).split(",");
+						String[] columnValues=matchColumnValueResult.group(2).split(",");
 						// checking if values and table column length entered by user is correct or not
-						if (columnNames.length == columnValues.length) {
-							String formattedInsertStringInFile = mergeColumnNameAndValue(columnNames, columnValues);
+						if(columnNames.length==columnValues.length){
+							String formattedInsertStringInFile=mergeColumnNameAndValue(columnNames,columnValues,"INSERT");
 							if(isTransaction) {
 								String permanentTablePath = GlobalSessionDetails.getLoggedInUsername()
 										.concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
@@ -255,18 +267,21 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 							}else {
 								FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
 							}
-							result = 5;
-							// System.out.println(insertStringInFile+"Hello string");
-						} else {
-							result = 6;
-							System.out.println(
-									"Expecting " + columnNames.length + " values instead got " + columnValues.length);
+							// write validation logic before inserting into text file and match if table count is not equal to total length of total columns availabe
+							// in table then enter null for each column.
+							result=5;
+							//System.out.println(insertStringInFile+"Hello string");
+						}
+						else{
+							result=6;
+							System.out.println("Expecting "+columnNames.length+" values instead got "+columnValues.length);
 						}
 					}
 
 				}
-			} else {
-				result = 6;
+			}
+			else{
+				result=6;
 				System.out.println("Please check insert syntax. Dbname not included.");
 			}
 
@@ -276,8 +291,149 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 	}
 
 	@Override
-	public void fetchTableRecords() {
+	public int fetchTableRecords(String query, Boolean isTransaction) throws Exception {
+		int result=0;
+		String dbName="";
+		String tableName="";
+		String[] columnInQuery;
+		boolean validateProvidedLegitColumns=true;
 
+		// Logic to extract table name and database name
+		Pattern patternDBTable=Pattern.compile(Constants.DB_TABLE_NAME_SELECT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
+		Matcher matcherDBTable = patternDBTable.matcher(query);
+
+		// Logic to extract columns
+		Pattern columnsPattern = Pattern.compile("select(.*?)from", Pattern.CASE_INSENSITIVE);
+		Matcher columnsMatcher = columnsPattern.matcher(query);
+
+		if(matcherDBTable.find() && columnsMatcher.find()){
+			String[] separateDbtableName=matcherDBTable.group(0).split("\\.");
+
+			// if query contains dbName and table name
+			if(separateDbtableName.length==2){
+				dbName=separateDbtableName[0].trim();
+				tableName=separateDbtableName[1].trim();
+				columnInQuery=columnsMatcher.group(1).split(",");
+				List<String> totalColumn=Arrays.asList(readColumnsOfTable(dbName,tableName)); // total columns present in Table
+
+				// to check if column provided by user matches with table columns in DB
+				if(columnInQuery.length>1){
+					for(int i=0;i<columnInQuery.length;i++){
+						if(!totalColumn.contains(columnInQuery[i].trim())){
+							validateProvidedLegitColumns=false;
+							break;
+						}
+					}
+				}
+
+				// looping to print the fetched records
+				if(validateProvidedLegitColumns){
+					// write a logic to read from the file
+					List<List<String>> tableRecords=readFile(dbName,tableName,columnInQuery);
+					fmt.format("\n");
+					for (int i = 0; i < tableRecords.size(); i++) {
+						for(int j=0;j<tableRecords.get(i).size();j++){
+							fmt.format("%30s", tableRecords.get(i).get(j));
+						}
+						fmt.format("\n");
+					}
+					System.out.println(fmt);
+					result=7;
+				}else{
+					result=8;
+					System.out.println("Provided Columns does not exists in table");
+				}
+			}
+			else{
+				result=8;
+				System.out.println("Either provide dbName or use useDB operation");
+			}
+		}
+		else{
+			result=8;
+			System.out.println("Please provide valid select syntax");
+		}
+		return result;
+	}
+
+
+	public List<List<String>> readFile(String dbName, String tableName, String[]columnsInQuery) throws Exception {
+		String path = GlobalSessionDetails.getLoggedInUsername() + "/" + dbName + "/" + tableName + ".txt";
+		List<List<String>> tableRecords = new ArrayList<List<String>>();
+		// String[]columnsInQuery= Arrays.asList();
+		BufferedReader reader = new BufferedReader(new FileReader(path));
+		String line = reader.readLine();
+		int counter = 0;
+
+		// reading table file line by lilne for select output
+		while (line != null) {
+			String[] splitSt = line.split("#");
+			List<String> rowValue=new ArrayList<String>();
+			for (int i = 0; i < splitSt.length; i++) {
+				String[] columnNameValueSeparator = splitSt[i].trim().split(":");
+				if(columnNameValueSeparator.length>0){
+
+					// if columnNames are provided or  user want to fetch all (*) records
+					if(!columnsInQuery[0].trim().equals("*")){
+						for(int ci=0;ci<columnsInQuery.length;ci++){
+							if(columnsInQuery[ci].trim().equals(columnNameValueSeparator[0])){
+								if (counter == 0) {
+									fmt.format("%30s", columnNameValueSeparator[0]);
+								}
+								rowValue.add(columnNameValueSeparator[1]);
+							}
+						}
+
+					}else{
+						// if requested for all records
+						if (counter == 0) {
+							// adding here output heading which will be column name
+							fmt.format("%30s", columnNameValueSeparator[0]);
+						}
+						rowValue.add(columnNameValueSeparator[1]);
+					}
+				}
+
+
+			}
+			tableRecords.add(rowValue);
+
+			// setting here counter as 1 so that fmt does not contain header in a loop.
+			counter = 1;
+			line = reader.readLine();
+		}
+		reader.close();
+		return tableRecords;
+	}
+
+	public String[] readColumnsOfTable(String dbName,String tableName) throws Exception {
+		String tablePath = GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/schemaDetails.txt";
+		List<String> columnNamesList = new ArrayList<String>();
+		boolean fetchTableName=false;
+		BufferedReader reader = new BufferedReader(new FileReader(tablePath));
+		String line = reader.readLine();
+		int counter = 0;
+		while (line != null) {
+			if(fetchTableName){
+				columnNamesList= Arrays.asList(line.split("#"));
+				fetchTableName=false;
+				break;
+			}
+			if(line.contains("["+tableName+"]")){
+				fetchTableName=true;
+			}
+
+			line = reader.readLine();
+		}
+		reader.close();
+		String[] columnName = new String[columnNamesList.size()];
+		if(columnNamesList.size()>0){
+			for(int i=0;i<columnNamesList.size();i++){
+				columnName[i]=columnNamesList.get(i).split(":")[0];
+			}
+		}
+
+		return columnName;
 	}
 
 	@Override

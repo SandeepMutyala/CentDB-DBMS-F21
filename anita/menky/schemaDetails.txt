@@ -1,0 +1,2 @@
+[didaa]
+id:int#name:varchar;

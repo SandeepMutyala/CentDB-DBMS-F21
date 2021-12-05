@@ -21,19 +21,13 @@ public class SchemaDetails {
             }
     }
 
-    public static boolean insertInSchemaFile(String query, Boolean isTransaction) throws IOException {
+    public static boolean insertInSchemaFile(String query, String path, Boolean isTransaction) throws IOException {
         boolean result = false;
-        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction + "/";
+        String completeSchemaPath = path + "/schemaDetails.txt";
         if (isTransaction) {
-            completeSchemaPath += "StructureAndDataExport.txt";
-            System.out.println(completeSchemaPath);
             String permanentExportPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction.substring(4) + "/StructureAndDataExport.txt";
             File permanentExportFile = new File(permanentExportPath);
             File tempExportFile = new File(completeSchemaPath);
-
-//            if(!tempExportFile.exists()){
-//                tempExportFile.createNewFile();
-//            }
             if (permanentExportFile.exists()) {
                 createDuplicateCopy(tempExportFile, permanentExportFile);
             } else {
@@ -45,9 +39,46 @@ public class SchemaDetails {
                     e.printStackTrace();
                 }
             }
+        } else {
+            try {
+                FileWriterClass.writeInFile(query.concat(";"), completeSchemaPath);
+                result = true;
+            } catch (Exception e) {
+                System.out.println("An error occurred while inserting into schema");
+                e.printStackTrace();
+            }
         }
         return result;
     }
+
+//    public static boolean insertInSchemaFile(String query, Boolean isTransaction) throws IOException {
+//        boolean result = false;
+//        String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction + "/";
+//        if (isTransaction) {
+//            completeSchemaPath += "StructureAndDataExport.txt";
+//            System.out.println(completeSchemaPath);
+//            String permanentExportPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction.substring(4) + "/StructureAndDataExport.txt";
+//            File permanentExportFile = new File(permanentExportPath);
+//            File tempExportFile = new File(completeSchemaPath);
+//
+////            if(!tempExportFile.exists()){
+////                tempExportFile.createNewFile();
+////            }
+//            if (permanentExportFile.exists()) {
+//                createDuplicateCopy(tempExportFile, permanentExportFile);
+//            }
+//            else {
+//                try {
+//                    FileWriterClass.writeInFile(query.concat(";"), completeSchemaPath);
+//                    result = true;
+//                } catch (Exception e) {
+//                    System.out.println("An error occurred while inserting into schema");
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return result;
+//    }
 
 
 

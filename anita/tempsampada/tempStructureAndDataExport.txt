@@ -1,5 +1,0 @@
-create database sampada;
-a:int#;
-a:int#;
-a:int#;
-a:int#;
