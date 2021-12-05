@@ -20,10 +20,10 @@ public class TransactionManagement {
                 for (String query : queryList) {
                     query = query.trim();
                     if (query.equals("rollback")) {
-                        //write the logic for rollback
+                        TransactionResult.rollback();
                     }
                     if (query.equals("commit")) {
-                        //overwrite the permanent files with the temporary files
+                        TransactionResult.commit();
                     }
                     try {
                         queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
