@@ -138,7 +138,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 // write logic to extract column and datatype from query
                 if(SchemaDetails.createSchemaFile(tableDiectoryPath)){
                     String formattedColumnDetailsInFile=mergeColumnNameAndValue(columnName,columnDataType,"CREATE");
-                    FileWriterClass.writeInFile("["+tableName+"]",tableDiectoryPath+"/schemaDetails.txt");
+                    FileWriterClass.writeInFile("["+tableName.trim().toLowerCase()+"]",tableDiectoryPath+"/schemaDetails.txt");
                     SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile,tableDiectoryPath);
 
                 }
@@ -154,9 +154,16 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     public String mergeColumnNameAndValue(String[] columnNames,String[] columnValues,String operationType){
         StringBuilder insertStringInFile=new StringBuilder();
         for(int i=0;i<columnNames.length;i++){
-            insertStringInFile.append(columnNames[i]+":"+columnValues[i]+"#");
+            if(i==columnNames.length-1){
+                insertStringInFile.append(columnNames[i]+":"+columnValues[i]);
+            }
+            else{
+                insertStringInFile.append(columnNames[i]+":"+columnValues[i]+"#");
+            }
+
         }
         String formattedInsertStringInFile = insertStringInFile.toString().replaceAll(" ", "");
+        formattedInsertStringInFile = insertStringInFile.toString().replaceAll(";", "");
         return formattedInsertStringInFile;
     }
 
@@ -229,71 +236,145 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         int result=0;
         String dbName="";
         String tableName="";
+        String[] columnInQuery;
+        boolean validateProvidedLegitColumns=true;
 
         // Logic to extract table name and database name
         Pattern patternDBTable=Pattern.compile(Constants.DB_TABLE_NAME_SELECT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher matcherDBTable = patternDBTable.matcher(query);
 
-        if(matcherDBTable.find()){
+        // Logic to extract columns
+        Pattern columnsPattern = Pattern.compile("select(.*?)from", Pattern.CASE_INSENSITIVE);
+        Matcher columnsMatcher = columnsPattern.matcher(query);
+
+        if(matcherDBTable.find() && columnsMatcher.find()){
             String[] separateDbtableName=matcherDBTable.group(0).split("\\.");
+
+            // if query contains dbName and table name
             if(separateDbtableName.length==2){
                 dbName=separateDbtableName[0].trim();
                 tableName=separateDbtableName[1].trim();
+                columnInQuery=columnsMatcher.group(1).split(",");
+                List<String> totalColumn=Arrays.asList(readColumnsOfTable(dbName,tableName)); // total columns present in Table
 
-                // write a logic to read from the file
-                List<List<String>> tableRecords=readFile(dbName,tableName);
-                fmt.format("\n");
-                for (int i = 0; i < tableRecords.size(); i++) {
-                    for(int j=0;j<tableRecords.get(i).size();j++){
-                        fmt.format("%20s", tableRecords.get(i).get(j));
+                // to check if column provided by user matches with table columns in DB
+                if(columnInQuery.length>1){
+                    for(int i=0;i<columnInQuery.length;i++){
+                        if(!totalColumn.contains(columnInQuery[i].trim())){
+                            validateProvidedLegitColumns=false;
+                            break;
+                        }
                     }
-                    fmt.format("\n");
                 }
 
-                System.out.println(fmt);
-                result=7;
+                // looping to print the fetched records
+                if(validateProvidedLegitColumns){
+                    // write a logic to read from the file
+                    List<List<String>> tableRecords=readFile(dbName,tableName,columnInQuery);
+                    fmt.format("\n");
+                    for (int i = 0; i < tableRecords.size(); i++) {
+                        for(int j=0;j<tableRecords.get(i).size();j++){
+                            fmt.format("%30s", tableRecords.get(i).get(j));
+                        }
+                        fmt.format("\n");
+                    }
+                    System.out.println(fmt);
+                    result=7;
+                }else{
+                    result=8;
+                    System.out.println("Provided Columns does not exists in table");
+                }
             }
             else{
+                result=8;
                 System.out.println("Either provide dbName or use useDB operation");
             }
         }
         else{
             result=8;
+            System.out.println("Please provide valid select syntax");
         }
-        // to spearate table and database name pattern
-        /*Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_INSERT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
-        Matcher matchTableResult = tablePattern.matcher(query);*/
         return result;
     }
 
 
-    public List<List<String>> readFile(String dbName, String tableName) throws Exception {
+    public List<List<String>> readFile(String dbName, String tableName, String[]columnsInQuery) throws Exception {
         String path = GlobalSessionDetails.getLoggedInUsername() + "/" + dbName + "/" + tableName + ".txt";
         List<List<String>> tableRecords = new ArrayList<List<String>>();
+       // String[]columnsInQuery= Arrays.asList();
         BufferedReader reader = new BufferedReader(new FileReader(path));
         String line = reader.readLine();
         int counter = 0;
+
+        // reading table file line by lilne for select output
         while (line != null) {
             String[] splitSt = line.split("#");
             List<String> rowValue=new ArrayList<String>();
             for (int i = 0; i < splitSt.length; i++) {
-
                 String[] columnNameValueSeparator = splitSt[i].trim().split(":");
                 if(columnNameValueSeparator.length>0){
-                    if (counter == 0) {
-                        fmt.format("%20s", columnNameValueSeparator[0]);
+
+                    // if columnNames are provided or  user want to fetch all (*) records
+                    if(!columnsInQuery[0].trim().equals("*")){
+                       for(int ci=0;ci<columnsInQuery.length;ci++){
+                            if(columnsInQuery[ci].trim().equals(columnNameValueSeparator[0])){
+                                if (counter == 0) {
+                                    fmt.format("%30s", columnNameValueSeparator[0]);
+                                }
+                                rowValue.add(columnNameValueSeparator[1]);
+                            }
+                       }
+
+                    }else{
+                        // if requested for all records
+                        if (counter == 0) {
+                            // adding here output heading which will be column name
+                            fmt.format("%30s", columnNameValueSeparator[0]);
+                        }
+                        rowValue.add(columnNameValueSeparator[1]);
                     }
-                    rowValue.add(columnNameValueSeparator[1]);
                 }
+
+
             }
             tableRecords.add(rowValue);
 
+            // setting here counter as 1 so that fmt does not contain header in a loop.
             counter = 1;
-            // read next line
             line = reader.readLine();
         }
         reader.close();
         return tableRecords;
+    }
+
+    public String[] readColumnsOfTable(String dbName,String tableName) throws Exception {
+        String tablePath = GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/schemaDetails.txt";
+        List<String> columnNamesList = new ArrayList<String>();
+        boolean fetchTableName=false;
+        BufferedReader reader = new BufferedReader(new FileReader(tablePath));
+        String line = reader.readLine();
+        int counter = 0;
+        while (line != null) {
+            if(fetchTableName){
+                columnNamesList=Arrays.asList(line.split("#"));
+                fetchTableName=false;
+                break;
+            }
+            if(line.contains("["+tableName+"]")){
+                fetchTableName=true;
+            }
+
+            line = reader.readLine();
+        }
+        reader.close();
+        String[] columnName = new String[columnNamesList.size()];
+        if(columnNamesList.size()>0){
+            for(int i=0;i<columnNamesList.size();i++){
+                columnName[i]=columnNamesList.get(i).split(":")[0];
+            }
+        }
+
+        return columnName;
     }
 
     @Override

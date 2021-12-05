@@ -1,4 +1,4 @@
-column1:"mom"#column2:1#column3:"helllo"
-column1:"mom"#column2:1#column3:"helllo"
-column1:"mom"#column2:1#column3:"helllo"
-column1:"mom"#column2:1#column3:"helllo"
+id:1#firstName:"Anita"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:123#confirm_password:123#role:"ADMIN"#phone_number:"8974561325"
+id:2#firstName:"Anita"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:123#confirm_password:123#role:"ADMIN"#phone_number:"8974561325"
+id:3#firstName:"Anita"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:123#confirm_password:123#role:"ADMIN"#phone_number:"8974561325"
+id:4#firstName:"Anita"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:123#confirm_password:123#role:"ADMIN"#phone_number:"8974561325"
