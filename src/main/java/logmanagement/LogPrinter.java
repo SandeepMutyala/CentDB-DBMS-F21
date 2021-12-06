@@ -6,10 +6,6 @@ public class LogPrinter {
 
     private static LogPrinter instanceObject = null;
 
-    private LogPrinter() {
-        // required private constructor
-    }
-
     public static LogPrinter getInstanceObject() {
         if (instanceObject == null) {
             instanceObject = new LogPrinter();
@@ -28,22 +24,18 @@ public class LogPrinter {
     }
 
     public void generalMessagePrinter(String messageContent) {
-        System.out.print("\n" + messageContent +"\n");
+        //System.out.print("\n" + messageContent +"\n");
         Logger.getInstanceObject().sendDataToGeneralLogFile(messageContent);
-       // Logger.getInstanceObject().sendDataToEventLogFile(messageContent);
+        // Logger.getInstanceObject().sendDataToEventLogFile(messageContent);
     }
 
     public void queryMessagePrinter(String messageContent) {
-        System.out.print("\n" + messageContent +"\n");
         Logger.getInstanceObject().sendDataToQueryLogFile(messageContent);
     }
 
-    public void createLogFiles() {
-
-    }
-
-    public void errorInCommand() {
-        errorPrinter("\n\tPlease enter relevant command\n");
-        Logger.getInstanceObject().sendDataToEventLogFile("\n\tError: Please enter relevant command\n");
-    }
+    //Unused code
+//    public void errorInCommand(String error) {
+//        errorInCommand("\nPlease enter correct command");
+//        Logger.getInstanceObject().sendDataToEventLogFile("\n\tError: Please enter correct command\n");
+//    }
 }

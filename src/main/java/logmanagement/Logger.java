@@ -41,18 +41,21 @@ public class Logger {
             File generalLogFile = new File(generalLogFilePath);  //default general log text file
             File eventLogFile = new File(eventLogFilePath); //default event log text file
             File queryLogFile = new File(queryLogFilePath);  //default query log text file
-            if (generalLogFile.createNewFile())   //if no file exists, we create one
-            {
-                System.out.println("Latest General Logs are updated!");
-            }
-            if(eventLogFile.createNewFile())   //if no file exists, we create one
-            {
-                System.out.println("Latest Event Logs are updated!");
-            }
-            if(queryLogFile.createNewFile())  //if no file exists, we create one
-            {
-                System.out.println("Latest Query Logs are updated!");
-            }
+            // if (generalLogFile.createNewFile())   //if no file exists, we create one
+            generalLogFile.createNewFile();
+//            {
+//                System.out.println("Latest General Logs are updated!");
+//            }
+            //else if(eventLogFile.createNewFile())   //if no file exists, we create one
+            eventLogFile.createNewFile();
+//            {
+//                System.out.println("Latest Event Logs are updated!");
+//            }
+            //else if(queryLogFile.createNewFile())  //if no file exists, we create one
+            queryLogFile.createNewFile();
+//            {
+//                System.out.println("Latest Query Logs are updated!");
+//            }
             generalLog = new FileWriter(generalLogFile, true);//true means appending
             eventLog = new FileWriter(eventLogFile, true);
             queryLog = new FileWriter(queryLogFile,true);
@@ -67,7 +70,7 @@ public class Logger {
         Timestamp timestamp = new Timestamp(presentDate.getTime());
         SimpleDateFormat Format = new SimpleDateFormat("MMM/dd/YYYY - HH:mm:ss - EEE");
         String dateTimeDay = Format.format(timestamp);
-        dateTimeDay = "\n\t[ "+dateTimeDay+" ]\n";
+        dateTimeDay = "\n(| "+dateTimeDay+" |)\n";
         return dateTimeDay;
     }
 
@@ -83,9 +86,9 @@ public class Logger {
                 previousDate = date;
             }
             generalLogDate = true;
-            generalLog.write(date);
+            generalLog.write(date + "\n");
             generalLog.write(inputData + "\n");
-            generalLog.write("----------------------------***********-----------------------------\n");
+            generalLog.write("\n---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------\n");
             generalLog.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,9 +107,9 @@ public class Logger {
             }
             previousDate = date;
             eventLogDate = true;
-            eventLog.write(date);
+            eventLog.write(date + "\n");
             eventLog.write(inputData+ "\n");
-            eventLog.write("----------------------------***********-----------------------------\n");
+            eventLog.write("\n---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------\n");
             eventLog.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,9 +128,9 @@ public class Logger {
             }
             previousDate = date;
             queryLogDate = true;
-            queryLog.write(date);
-            queryLog.write(inputData+ "\n");
-            queryLog.write("----------------------------***********-----------------------------\n");
+            queryLog.write(date + "\n");
+            queryLog.write(inputData + "\n");
+            queryLog.write("\n---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------\n");
             queryLog.flush();
         } catch (Exception e) {
             e.printStackTrace();
