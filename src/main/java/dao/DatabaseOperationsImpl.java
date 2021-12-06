@@ -22,6 +22,8 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     * result= 8, Select failed
     * result= 9, update success
     * result = 10, update failed
+    * result=11, delete row success
+    * result=12, delete row failed
     * */
     static Formatter  fmt = new Formatter();
     @Override
@@ -75,7 +77,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                     // if database name is not in the query
                     if(separateDbtableName.length<=1){
                         dbName=GlobalSessionDetails.getDbInAction();
-                        tableName=matchResult.group(1);
+                        tableName=matchResult.group(1).toLowerCase();
                         tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
                     }
                     // if database name is in query
@@ -192,7 +194,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
             if(separateDbtableName.length==2){
                 dbName=separateDbtableName[0];
-                tableName=separateDbtableName[1];
+                tableName=separateDbtableName[1].toLowerCase();
 
                 if(DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName,tableName)){
                     String insertFilePath=GlobalSessionDetails.loggedInUsername+"/"+dbName+"/"+tableName+".txt";
@@ -255,10 +257,10 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
             // if query contains dbName and table name
             if (separateDbtableName.length == 2) {
                 dbName = separateDbtableName[0].trim();
-                tableName = separateDbtableName[1].trim();
+                tableName = separateDbtableName[1].trim().toLowerCase();
             } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {  // to ceck if user used useDB opeartion
                 dbName = GlobalSessionDetails.getDbInAction().trim();
-                tableName = matcherDBTable.group(0).trim();
+                tableName = matcherDBTable.group(0).trim().toLowerCase();
             } else {
                 result = 8;
                 System.out.println("Either provide dbName or use useDB operation");
@@ -433,11 +435,11 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 // to check if user entered bdb and table name in query. if not then check if global session contains value, if not then SOp, db absent
                 if (separateDbtableName.length == 2) {
                     dbName = separateDbtableName[0].trim();
-                    tableName = separateDbtableName[1].trim();
+                    tableName = separateDbtableName[1].trim().toLowerCase();
 
                 }else if(!GlobalSessionDetails.getDbInAction().isEmpty()){
                     dbName = GlobalSessionDetails.getDbInAction().trim();
-                    tableName = matcherDBTable.group(0).trim();
+                    tableName = matcherDBTable.group(0).trim().toLowerCase();
                 }
                 else{
                     result = 10;
@@ -526,10 +528,114 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     }
 
 
-
+/*DELETE FROM table_name WHERE condition;
+* DELETE FROM university.user WHERE id=1;
+* */
     @Override
-    public void deleteATableRecords() {
+    public int deleteATableRecords(String query) throws Exception {
+        int result=0;
+        String dbName="";
+        String tableName="";
+        String whereColumnName="";
+        String whereColumnValue="";
+        String tmpFilePath="";
+        String deleteTablePath="";
+        boolean validateProvidedLegitColumns=false;
 
+        // Pattern to extract schema and table name
+        Pattern patternDBTable = Pattern.compile("(?<=from)(.*)(?=where)", Pattern.CASE_INSENSITIVE);
+        Matcher matcherDBTable = patternDBTable.matcher(query);
+
+
+        //to extract where condition
+        Pattern wherePattern = Pattern.compile("(?<=where\\s).*", Pattern.CASE_INSENSITIVE);
+        Matcher whereMatcher = wherePattern.matcher(query);
+
+        /*if(matcherDBTable.find()){
+            System.out.println("Group 0"+matcherDBTable.group(0)+"Group 1"+matcherDBTable.group(1));
+            System.out.println(whereMatcher.find()+"Group 0 "+whereMatcher.group(0));
+        }*/
+
+        if (matcherDBTable.find()) {
+            String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
+
+            // to check if user entered bdb and table name in query. if not then check if global session contains value, if not then SOp, db absent
+            if (separateDbtableName.length == 2) {
+                dbName = separateDbtableName[0].trim();
+                tableName = separateDbtableName[1].trim().toLowerCase();
+
+            }else if(!GlobalSessionDetails.getDbInAction().isEmpty()){
+                dbName = GlobalSessionDetails.getDbInAction().trim();
+                tableName = matcherDBTable.group(0).trim().toLowerCase();
+            }
+            else{
+                result = 12;
+                System.out.println("Either provide dbName or use useDB operation");
+            }
+
+
+            if(!tableName.isEmpty() && !dbName.isEmpty()){
+
+                // check if db and table exists
+                if(DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName, tableName)){
+
+                       // List<String> totalColumn = Arrays.asList(readColumnsOfTable(dbName, tableName)); // total columns present in Table
+                       
+                        if(whereMatcher.find()){
+                            whereColumnName = whereMatcher.group(0).trim().split("=")[0];
+                            whereColumnValue = whereMatcher.group(0).trim().split("=")[1].trim();
+
+                            deleteTablePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+tableName+".txt";
+                            tmpFilePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+tableName+"_tmp.txt";
+
+                            File deleteOldTableFile = new File(deleteTablePath);
+
+                            // creating a new file to write everything into it with deleted value
+                            BufferedReader br = new BufferedReader(new FileReader(deleteTablePath));
+                            BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFilePath));
+
+                            String line = br.readLine();
+                            while(line!=null){
+                               // boolean containsWord=
+                                if(line.contains(whereColumnName+":"+whereColumnValue)){
+                                    line = br.readLine();
+                                    continue;
+                                }
+                                else{
+                                    bw.append(line);
+                                    bw.newLine();
+                                }
+                               /* bw.append(newLine.substring(0,newLine.length()-1));
+                                bw.newLine();*/
+                                line = br.readLine();
+                            }
+
+                            bw.close();
+                            br.close();
+
+                            deleteOldTableFile.delete();
+                            File newfile = new File(tmpFilePath);
+                            newfile.renameTo(deleteOldTableFile);
+
+                            result = 11;
+
+                            /*filePath.delete();
+                            File newfile = new File(tempFilePath);
+                            newfile.renameTo(filePath);*/
+                        }
+                   // }
+
+                }
+
+
+
+            }
+        }
+        else{
+            result=12;
+            System.out.println("Please enter valid update syntax");
+        }
+        return result;
     }
 
     @Override

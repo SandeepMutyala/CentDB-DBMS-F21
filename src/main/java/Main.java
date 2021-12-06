@@ -88,6 +88,10 @@ public class Main {
                 break;
             case 10: System.out.println("Failed to update records!");
                 break;
+            case 11: System.out.println("Deleted record successfully");
+                break;
+            case 12: System.out.println("Failed to delete records!");
+                break;
             default: System.out.println("Couldn't perform Operation");
         }
     }

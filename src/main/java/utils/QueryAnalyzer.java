@@ -36,6 +36,9 @@ public class QueryAnalyzer {
             case "UPDATE":
                 output=dbOperations.updateATableRecords(formattedQuery);
                 break;
+            case "DELETE":
+                output=dbOperations.deleteATableRecords(formattedQuery);
+                break;
             default:
         }
             /*if(analyseQuery[i].equalsIgnoreCase("create")){
