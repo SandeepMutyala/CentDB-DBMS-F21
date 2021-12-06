@@ -24,20 +24,26 @@ public class TransactionResult {
 		String directoryPath = GlobalSessionDetails.loggedInUsername + "/";
 		File allDatabases = new File(directoryPath);
 		for (File folder : allDatabases.listFiles()) {
-			String tempFolder = GlobalSessionDetails.getLoggedInUsername() + "/" + "temp" + folder.getName();
-			File tempDatabase = new File(tempFolder);
-			if (tempDatabase.exists()) {
-				// checking if temp folders exist
-				for (File table : tempDatabase.listFiles()) {
+			if (folder.getName().substring(0, 4).contains("temp")) {
+				for (File table : folder.listFiles()) {
 					String permanentFilePath = GlobalSessionDetails.getLoggedInUsername() + "/"
-							+ tempDatabase.getName().substring(4) + "/" + table.getName();
+							+ folder.getName().substring(4) + "/" + table.getName();
+					String directorypath = GlobalSessionDetails.getLoggedInUsername() + "/"
+							+ folder.getName().substring(4) + "/";
+					File directory = new File(directorypath);
 					File permanentTableFile = new File(permanentFilePath);
+					if (directory.exists()) {
+						permanentTableFile.createNewFile();
+					} else {
+						directory.mkdirs();
+						permanentTableFile.createNewFile();
+					}
 					FileWriterClass.createDuplicateCopy(permanentTableFile, table);
 					table.delete();
 				}
-				tempDatabase.delete();
 			}
-
+			folder.delete();
 		}
+
 	}
 }

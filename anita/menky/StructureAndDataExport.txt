@@ -1,2 +1,0 @@
-create database menky;
-create table didaa (id int, name varchar, pass varchar);

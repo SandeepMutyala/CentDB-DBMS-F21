@@ -8,6 +8,7 @@ import utils.FileWriterClass;
 import utils.GlobalSessionDetails;
 import utils.SchemaDetails;
 import utils.CreateStructureAndDataExportFile;
+import static utils.FileComparison.compareFiles;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -258,10 +259,13 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 										.concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
 								File permanentTable = new File(permanentTablePath);
 								if (permanentTable.exists()) {
-									System.out.println(formattedInsertStringInFile);
 									File tempTable = new File(insertFilePath);
-									FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
-									FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
+									if(!compareFiles(permanentTable,tempTable)) {
+										FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
+										FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);}
+									else {
+										FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
+									}
 								}
 								else {
 									FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
