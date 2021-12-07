@@ -9,7 +9,7 @@ import utils.QueryAnalyzer;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Boolean isSuccessResponse = false;
         int choice = 0;
         Scanner sc = new Scanner(System.in);
@@ -17,9 +17,9 @@ public class Main {
         System.out.println("2: Login");
         System.out.println("3: Exit");
         choice = sc.nextInt();
-        /*switch (choice) {
+        switch (choice) {
             case 1:
-                isSuccessResponse = UserRegistration.registerUser();
+                isSuccessResponse = true;//UserRegistration.registerUser();
                 break;
             case 2:
                 isSuccessResponse = UserLogin.userLogin();
@@ -29,9 +29,8 @@ public class Main {
             default:
                 System.out.println(Constants.INVALID_SELECTION);
                 break;
-        }*/
-        try{
-            //while (isSuccessResponse) {
+        }
+        while (isSuccessResponse) {
             System.out.println("\n======================================================================================\n======================================================================================\n");
             System.out.println("Please select an option to perform an action");
             System.out.println("1: Write Queries");
@@ -41,7 +40,8 @@ public class Main {
             System.out.println("5: Log out");
             choice = sc.nextInt();
             switch (choice) {
-                case 1: //writeQueries();
+                case 1:
+                    //TransactionManagement.executeQuery();
                     Scanner scQuery = new Scanner(System.in);
                     String query = scQuery.nextLine();
                     DatabaseOperations dbOperations=new DatabaseOperationsImpl();
@@ -59,11 +59,7 @@ public class Main {
                 default: System.out.println(Constants.INVALID_SELECTION);
                     break;
             }
-            // }
-        }catch(Exception ex){
-            System.out.println("Exceptiton occured"+ex);
         }
-
     }
 
     public static void queryOutputAnalysis(int result){
@@ -95,6 +91,10 @@ public class Main {
             case 13: System.out.println("Table Dropped successfully");
                 break;
             case 14: System.out.println("Failed to drop table!");
+                break;
+            case 15: System.out.println("Use query applied");
+                break;
+            case 16: System.out.println("Failed to apply use db query");
                 break;
             default: System.out.println("Couldn't perform Operation");
         }

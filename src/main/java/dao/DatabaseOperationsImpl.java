@@ -25,7 +25,9 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     * result=11, delete row success
     * result=12, delete row failed
     * result=13, drop table success
-     *result=14, drop table failed
+    *result=14, drop table failed
+    * result=15, use db applied
+    * result=16, use db applied query failed
     * */
     static Formatter  fmt = new Formatter();
     @Override
@@ -85,7 +87,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                     // if database name is in query
                     if(separateDbtableName.length>1){
                         dbName=separateDbtableName[0];
-                        tableName=separateDbtableName[1];
+                        tableName=separateDbtableName[1].toLowerCase();
                         tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
                     }
 
@@ -176,11 +178,12 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
 
     @Override
-    public int insertInTable(String query) throws IOException{
+    public int insertInTable(String query) throws Exception {
         int result=0;
         String dbName="";
         String tableName="";
-        String schemaDetailPath="";
+        //String schemaDetailPath="";
+        boolean validateProvidedLegitColumns=false;
 
         // to spearate table and database name pattern
         Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_INSERT_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
@@ -190,44 +193,67 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         Pattern ColumnValuePattern = Pattern.compile(Constants.COLUMN_NAME_VALUES_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
         Matcher matchColumnValueResult = ColumnValuePattern.matcher(query);
 
-        if(matchTableResult.find()){
+        if(matchTableResult.find()) {
             // System.out.println(matchTableResult.group(1)+"Group tabel name");
-            String[] separateDbtableName=matchTableResult.group(1).split("\\.");
+            String[] separateDbtableName = matchTableResult.group(1).split("\\.");
+            System.out.println(GlobalSessionDetails.getDbInAction().isEmpty()+" pattern find");
+            if (separateDbtableName.length == 2) {
+                dbName = separateDbtableName[0].trim();
+                tableName = separateDbtableName[1].trim().toLowerCase();
 
-            if(separateDbtableName.length==2){
-                dbName=separateDbtableName[0];
-                tableName=separateDbtableName[1].toLowerCase();
+            } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
 
-                if(DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName,tableName)){
-                    String insertFilePath=GlobalSessionDetails.loggedInUsername+"/"+dbName+"/"+tableName+".txt";
+                dbName = GlobalSessionDetails.getDbInAction().trim();
+                tableName = matchTableResult.group(1).trim().toLowerCase();
+                System.out.println(tableName);
+            } else {
+                result = 6;
+                System.out.println("Either provide dbName or use useDB operation");
+            }
+            //if(separateDbtableName.length==2){
+            // dbName=separateDbtableName[0];
+            // tableName=separateDbtableName[1].toLowerCase();
 
-                    if(matchColumnValueResult.find()){
-                        String[] columnNames=matchColumnValueResult.group(1).split(",");
-                        String[] columnValues=matchColumnValueResult.group(2).split(",");
+            if(!tableName.isEmpty() && !dbName.isEmpty()){
+                if (DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName, tableName)) {
+                    String insertFilePath = GlobalSessionDetails.loggedInUsername + "/" + dbName + "/" + tableName + ".txt";
 
-                        // checking if values and table column length entered by user is correct or not
-                        if(columnNames.length==columnValues.length){
-                            String formattedInsertStringInFile=mergeColumnNameAndValue(columnNames,columnValues,"INSERT");
-                            FileWriterClass.writeInFile(formattedInsertStringInFile,insertFilePath);
-                            // write validation logic before inserting into text file and match if table count is not equal to total length of total columns availabe
-                            // in table then enter null for each column.
-                            result=5;
-                            //System.out.println(insertStringInFile+"Hello string");
+                    if (matchColumnValueResult.find()) {
+                        String[] columnNames = matchColumnValueResult.group(1).split(",");
+                        String[] columnValues = matchColumnValueResult.group(2).split(",");
+                        List<String> totalColumn = Arrays.asList(readColumnsOfTable(dbName, tableName));
+                        validateProvidedLegitColumns=validateIfColumnIsInTable(columnNames,totalColumn);
+
+                        if(validateProvidedLegitColumns){
+                            // checking if values and table column length entered by user is correct or not
+                            if (columnNames.length == columnValues.length) {
+                                String formattedInsertStringInFile = mergeColumnNameAndValue(columnNames, columnValues, "INSERT");
+                                FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
+                                // write validation logic before inserting into text file and match if table count is not equal to total length of total columns availabe
+                                // in table then enter null for each column.
+                                result = 5;
+                                //System.out.println(insertStringInFile+"Hello string");
+                            } else {
+                                result = 6;
+                                System.out.println("Expecting " + columnNames.length + " values instead got " + columnValues.length);
+                            }
                         }
                         else{
-                            result=6;
-                            System.out.println("Expecting "+columnNames.length+" values instead got "+columnValues.length);
+                            result = 6;
+                            System.out.println("Trying to insert column that doesn't exists in table");
                         }
+
                     }
 
                 }
             }
-            else{
+
+        }
+        else{
                 result=6;
                 System.out.println("Please check insert syntax. Dbname not included.");
             }
 
-        }
 
         return result;
     }
@@ -753,22 +779,9 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
                     File deleteOldTableFile = new File(deleteTablePath);
                     deleteOldTableFile.delete();    // deleting table file
-
-
-
-
-
-
-                    // renaming session_tmp as old value.
-
-
-
-
                     result = 13;
                 }
             }
-
-
         }else{
             result=14;
         }
@@ -776,7 +789,26 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     }
 
     @Override
-    public void useDb() {
+    public int useDb(String query) throws IOException {
+        int result=0;
+        String dbName="";
+        if(!query.isEmpty() && query.toLowerCase().contains("use")){
+            String subQuery = query.replace("use", "").trim();
+            //String dbname = QueryOperations.removeSemiColon(subQuery);
+            if(!subQuery.isEmpty()){
+                dbName=subQuery;
+                if(DatabaseExists.validateDatabaseExistence(dbName)){
+                    GlobalSessionDetails.setDbInAction(dbName);
+                    result=15;
+                }else{
+                    result=16;
+                }
 
+               // System.out.println("Use "+dbName+" applied");
+            }
+        }else{
+            result=16;
+        }
+        return result;
     }
 }

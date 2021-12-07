@@ -1,2 +1,0 @@
-create database university;
-CREATE TABLE university.user ( id INT NOT NULL, firstName VARCHAR(30) NOT NULL, lastName VARCHAR(30) NOT NULL, username VARCHAR(45) NOT NULL, password VARCHAR(64) NOT NULL, confirm_password VARCHAR(64) NOT NULL, role VARCHAR(10) NOT NULL, phone_number BIGINT(10) NOT NULL, PRIMARY KEY (id));
