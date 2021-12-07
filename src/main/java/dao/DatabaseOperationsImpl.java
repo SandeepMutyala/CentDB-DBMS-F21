@@ -29,7 +29,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     * result=15, use db applied
     * result=16, use db applied query failed
     * */
-    static Formatter  fmt = new Formatter();
+    Formatter  fmt = new Formatter();
     @Override
     public  int createDb(String query){
         int result=0;
@@ -71,6 +71,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 String[] columnDetails=matchResult.group(2).substring(1,matchResult.group(2).length()-1).split(",");
                 String[] removedPrimaryKeyColumnDetails=new String[columnDetails.length-1];
 
+                // CREATE TABLE db1.testTable4 (OrderID int ,OrderNumber int ,PersonID int,PRIMARY KEY (OrderID),FOREIGN KEY (PersonID) REFERENCES testTable1(PersonID));
                 for(int pi=0;pi<columnDetails.length-1;pi++){
                     removedPrimaryKeyColumnDetails[pi]=columnDetails[pi];
                 }
@@ -270,6 +271,8 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         String dbName = "";
         String tableName = "";
         String[] columnInQuery;
+        String whereColumnName="";
+        String whereColumnValue="";
         boolean validateProvidedLegitColumns = true;
 
         // Logic to extract table name and database name
@@ -279,6 +282,10 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         // Logic to extract columns
         Pattern columnsPattern = Pattern.compile("select(.*?)from", Pattern.CASE_INSENSITIVE);
         Matcher columnsMatcher = columnsPattern.matcher(query);
+
+        //to extract where condition
+        Pattern wherePattern = Pattern.compile("(?<=where\\s).*", Pattern.CASE_INSENSITIVE);
+        Matcher whereMatcher = wherePattern.matcher(query);
 
         if (matcherDBTable.find() && columnsMatcher.find()) {
             String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
@@ -308,8 +315,15 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
                     // looping to print the fetched records
                     if (validateProvidedLegitColumns) {
+
+                        if(whereMatcher.find()){
+                            whereColumnName = whereMatcher.group(0).trim().split("=")[0];
+                            whereColumnValue = whereMatcher.group(0).trim().split("=")[1].trim();
+                        }
+
+
                         // write a logic to read from the file
-                        List<List<String>> tableRecords = readFile(dbName, tableName, columnInQuery);
+                        List<List<String>> tableRecords = readFileForSelect(dbName, tableName, columnInQuery,whereColumnName,whereColumnValue);
                         fmt.format("\n");
                         for (int i = 0; i < tableRecords.size(); i++) {
                             for (int j = 0; j < tableRecords.get(i).size(); j++) {
@@ -347,45 +361,78 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         return true;
     }
 
-    public List<List<String>> readFile(String dbName, String tableName, String[] columnsInQuery) throws Exception {
+    public List<List<String>> readFileForSelect(String dbName, String tableName, String[] columnsInQuery,String whereColumnName,String whereColumnValue) throws Exception {
         String path = GlobalSessionDetails.getLoggedInUsername() + "/" + dbName + "/" + tableName + ".txt";
         List<List<String>> tableRecords = new ArrayList<List<String>>();
        // String[]columnsInQuery= Arrays.asList();
         BufferedReader reader = new BufferedReader(new FileReader(path));
         String line = reader.readLine();
         int counter = 0;
-
+        boolean filterRowFound=false;
         // reading table file line by lilne for select output
         while (line != null) {
             String[] splitSt = line.split("#");
             List<String> rowValue=new ArrayList<String>();
-            for (int i = 0; i < splitSt.length; i++) {
-                String[] columnNameValueSeparator = splitSt[i].trim().split(":");
-                if(columnNameValueSeparator.length>0){
 
-                    // if columnNames are provided or  user want to fetch all (*) records
-                    if(!columnsInQuery[0].trim().equals("*")){
-                       for(int ci=0;ci<columnsInQuery.length;ci++){
-                            if(columnsInQuery[ci].trim().equals(columnNameValueSeparator[0])){
+            if(!filterRowFound){
+                for (int i = 0; i < splitSt.length; i++) {
+                    String[] columnNameValueSeparator = splitSt[i].trim().split(":");
+                    if(columnNameValueSeparator.length>0){
+
+                        // if columnNames are provided or
+                        if(!columnsInQuery[0].trim().equals("*")){
+                            //if(whereColumnName.isEmpty()){
+                                for(int ci=0;ci<columnsInQuery.length;ci++){
+                                    if(whereColumnName.isEmpty()){
+                                        if(columnsInQuery[ci].trim().equals(columnNameValueSeparator[0])){
+                                            if (counter == 0) {
+                                                fmt.format("%30s", columnNameValueSeparator[0]);
+                                            }
+                                            rowValue.add(columnNameValueSeparator[1]);
+                                        }
+                                    }else{
+                                       if(line.contains(whereColumnName+":"+whereColumnValue) && (columnsInQuery[ci].trim().equals(columnNameValueSeparator[0]))){
+                                           if (counter == 0) {
+                                               fmt.format("%30s", columnNameValueSeparator[0]);
+                                           }
+                                           rowValue.add(columnNameValueSeparator[1]);
+                                       }
+                                    }
+
+                                }
+                            //}
+                            /*else{
                                 if (counter == 0) {
                                     fmt.format("%30s", columnNameValueSeparator[0]);
                                 }
-                                rowValue.add(columnNameValueSeparator[1]);
+                                if(line.contains(whereColumnName+":"+whereColumnValue)) {
+                                    rowValue.add(columnNameValueSeparator[1]);
+                                }
+                            }*/
+
+
+                        }else{  //user want to fetch all (*) records
+                            // if requested for all records
+                            if (counter == 0) {
+                                // adding here output heading which will be column name
+                                fmt.format("%30s", columnNameValueSeparator[0]);
                             }
-                       }
+                            if(whereColumnName.isEmpty()){
+                                rowValue.add(columnNameValueSeparator[1]);
+                            }else{
+                                if(whereColumnName.equals(columnNameValueSeparator[0]) && whereColumnValue.equals(columnNameValueSeparator[1]) || filterRowFound){
 
-                    }else{
-                        // if requested for all records
-                        if (counter == 0) {
-                            // adding here output heading which will be column name
-                            fmt.format("%30s", columnNameValueSeparator[0]);
+                                    filterRowFound=true;
+                                    rowValue.add(columnNameValueSeparator[1]);
+                                }
+                            }
                         }
-                        rowValue.add(columnNameValueSeparator[1]);
                     }
+
+
                 }
-
-
             }
+
             tableRecords.add(rowValue);
 
             // setting here counter as 1 so that fmt does not contain header in a loop.
@@ -395,6 +442,8 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         reader.close();
         return tableRecords;
     }
+
+
 
     public String[] readColumnsOfTable(String dbName,String tableName) throws Exception {
         String tablePath = GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/schemaDetails.txt";
@@ -513,7 +562,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                             if(columnNameValueSeparator.length>0){
                                                if(whereColumnName.trim().equals(columnNameValueSeparator[0]) && whereColumnValue.trim().equals(columnNameValueSeparator[1])){
                                                    filterRowFound=true;
-                                                   oldValue=columnNameValueSeparator[1];  // loggers if want to display value changed while updating
+                                                   //oldValue=columnNameValueSeparator[1];  // loggers if want to display value changed while updating
                                                }
                                                if(filterRowFound && columnInQuery.trim().equals(columnNameValueSeparator[0])){
                                                    newLine.append(columnNameValueSeparator[0]+":"+columnNewValue+"#");
@@ -578,11 +627,6 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         //to extract where condition
         Pattern wherePattern = Pattern.compile("(?<=where\\s).*", Pattern.CASE_INSENSITIVE);
         Matcher whereMatcher = wherePattern.matcher(query);
-
-        /*if(matcherDBTable.find()){
-            System.out.println("Group 0"+matcherDBTable.group(0)+"Group 1"+matcherDBTable.group(1));
-            System.out.println(whereMatcher.find()+"Group 0 "+whereMatcher.group(0));
-        }*/
 
         if (matcherDBTable.find()) {
             String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
