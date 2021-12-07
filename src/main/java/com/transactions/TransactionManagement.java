@@ -33,18 +33,20 @@ public class TransactionManagement {
 						}
                     }
                     try {
-                        queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+						queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                 }
             } else {
-                try {
-                    System.out.println(queryString);
-                    queryOutputAnalysis(QueryAnalyzer.splitQuery(queryString, dbOperations, false));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                System.out.println(queryString);
+				try {
+					queryOutputAnalysis(QueryAnalyzer.splitQuery(queryString, dbOperations, false));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
             return true;
         }

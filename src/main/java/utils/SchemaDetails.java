@@ -25,7 +25,7 @@ public class SchemaDetails {
         boolean result = false;
         String completeSchemaPath = path + "/schemaDetails.txt";
         if (isTransaction) {
-            String permanentExportPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction.substring(4) + "/StructureAndDataExport.txt";
+            String permanentExportPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction.substring(4) + "/schemaDetails.txt";
             File permanentExportFile = new File(permanentExportPath);
             File tempExportFile = new File(completeSchemaPath);
             if (permanentExportFile.exists()) {

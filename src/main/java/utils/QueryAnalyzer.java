@@ -12,7 +12,7 @@ public class QueryAnalyzer {
         this.dbOperations=dbOperations;
     }*/
 
-    public  static int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws IOException {
+    public  static int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws Exception {
         String formattedQuery = isTransaction ? query : removeSemiColon(query);
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
@@ -32,6 +32,16 @@ public class QueryAnalyzer {
             case "INSERT":
                 dbOperations.insertInTable(formattedQuery, isTransaction);
                 break;
+            case "SELECT":
+                output=dbOperations.fetchTableRecords(formattedQuery, isTransaction);
+                break;
+            case "UPDATE":
+                output=dbOperations.updateATableRecords(formattedQuery, isTransaction);
+                break;
+            case "DELETE":
+                output=dbOperations.deleteATableRecords(formattedQuery, isTransaction);
+                break;
+
             default:
         }
             /*if(analyseQuery[i].equalsIgnoreCase("create")){
