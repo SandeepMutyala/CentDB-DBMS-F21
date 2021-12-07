@@ -13,5 +13,6 @@ public interface DatabaseOperations{
     int fetchTableRecords(String query, Boolean isTransaction) throws Exception;
     int updateATableRecords(String query,Boolean isTransaction) throws Exception;
     int deleteATableRecords(String query, Boolean isTransaction) throws Exception;
-    void deleteTable();
+    int deleteTable(String query, Boolean isTransaction) throws IOException;
+    int useDb(String query, Boolean isTransaction) throws IOException;
 }

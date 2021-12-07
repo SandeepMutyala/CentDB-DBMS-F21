@@ -135,7 +135,6 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 							System.out.println("Please create or choose a Database first");
 						}
 					}
-
 				} else {
 					System.out.println("Please select valid datatype");
 				}
@@ -318,11 +317,24 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
 			// if query contains dbName and table name
 			if (separateDbtableName.length == 2) {
-				dbName = separateDbtableName[0].trim();
+				dbName = isTransaction ? "temp"+ separateDbtableName[0].trim() : separateDbtableName[0].trim();
 				tableName = separateDbtableName[1].trim();
 				columnInQuery = columnsMatcher.group(1).split(",");
 				List<String> totalColumn = Arrays.asList(readColumnsOfTable(dbName, tableName)); // total columns
-																									// present in Table
+																					// present in Table
+				if (isTransaction) {
+					String selectFilePath = GlobalSessionDetails.getLoggedInUsername()
+							.concat("/" + dbName + "/" + tableName) + ".txt";
+					String permanentTablePath = GlobalSessionDetails.getLoggedInUsername()
+							.concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
+					File permanentTable = new File(permanentTablePath);
+					if (permanentTable.exists()) {
+						File tempTable = new File(selectFilePath);
+						if (!compareFiles(permanentTable, tempTable)) {
+							FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
+						}
+					}
+				}
 
 				// to check if column provided by user matches with table columns in DB
 				if (columnInQuery.length > 1) {
@@ -341,7 +353,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 					fmt.format("\n");
 					for (int i = 0; i < tableRecords.size(); i++) {
 						for (int j = 0; j < tableRecords.get(i).size(); j++) {
-							fmt.format("%30s", tableRecords.get(i).get(j));
+							fmt.format("%20s", tableRecords.get(i).get(j));
 						}
 						fmt.format("\n");
 					}
@@ -383,7 +395,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 						for (int ci = 0; ci < columnsInQuery.length; ci++) {
 							if (columnsInQuery[ci].trim().equals(columnNameValueSeparator[0])) {
 								if (counter == 0) {
-									fmt.format("%30s", columnNameValueSeparator[0]);
+									fmt.format("%20s", columnNameValueSeparator[0]);
 								}
 								rowValue.add(columnNameValueSeparator[1]);
 							}
@@ -393,7 +405,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 						// if requested for all records
 						if (counter == 0) {
 							// adding here output heading which will be column name
-							fmt.format("%30s", columnNameValueSeparator[0]);
+							fmt.format("%20s", columnNameValueSeparator[0]);
 						}
 						rowValue.add(columnNameValueSeparator[1]);
 					}
@@ -413,6 +425,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 	public String[] readColumnsOfTable(String dbName, String tableName) throws Exception {
 		System.out.println("reading columns from table");
 		String tablePath = GlobalSessionDetails.getLoggedInUsername() + "/" + dbName + "/schemaDetails.txt";
+		System.out.println("path"+tablePath);
 		List<String> columnNamesList = new ArrayList<String>();
 		boolean fetchTableName = false;
 		BufferedReader reader = new BufferedReader(new FileReader(tablePath));
@@ -479,7 +492,6 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 		// to extract where condition
 		Pattern wherePattern = Pattern.compile("(?<=where\\s).*", Pattern.CASE_INSENSITIVE);
 		Matcher whereMatcher = wherePattern.matcher(query);
-
 		if (matcherDBTable.find()) {
 			String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
 
@@ -584,7 +596,6 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 					}
 
 				}
-
 				result = 9;
 			}
 		} else {
@@ -720,17 +731,137 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 		return result;
 	}
 
+	// DROP TABLE table_name;
+	// Drop table university.user;
 	@Override
-	public void deleteTable() {
+	public int deleteTable(String query, Boolean isTransaction) throws IOException {
+		int result=0;
+		String dbName="";
+		String tableName="";
+		String deleteTablePath="";
+		String schemaFilePath="";
+		String dataAndStructureFilePath="";
+		String tmpSchemaFilePath="";
+		String tmpDataAndExportFilePath="";
 
+		Pattern dbTablePattern = Pattern.compile(".*drop\\s+table\\s+(.*?)($|\\s+)", Pattern.CASE_INSENSITIVE);
+		Matcher matcherDBTable = dbTablePattern.matcher(query);
+
+		if (matcherDBTable.find()) {
+			String[] separateDbtableName = matcherDBTable.group(1).split("\\.");
+
+			// to check if user entered bdb and table name in query. if not then check if global session contains value, if not then SOp, db absent
+			if (separateDbtableName.length == 2) {
+				dbName = isTransaction? "temp"+ separateDbtableName[0].trim() : separateDbtableName[0].trim();
+				tableName = separateDbtableName[1].trim().toLowerCase();
+
+			} else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
+				dbName = GlobalSessionDetails.getDbInAction().trim();
+				tableName = matcherDBTable.group(0).trim().toLowerCase();
+			} else {
+				result = 14;
+				System.out.println("Either provide dbName or use useDB operation");
+			}
+			if(!tableName.isEmpty() && !dbName.isEmpty()){
+				// check if db and table exists
+				if(DatabaseExists.validateDatabaseExistence(dbName) && TableExistence.checkIfTableExists(dbName, tableName)){
+
+					deleteTablePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+tableName+".txt";
+					schemaFilePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+"schemaDetails.txt";
+					tmpSchemaFilePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+"schemaDetails_tmp.txt";
+
+					/*Schema.txt file update*/
+					// creating instance of schema file to update with deleted content
+					File deleteOldSchemaFile = new File(schemaFilePath);
+
+					// creating a new schema file to update it by deleting table details in it
+					BufferedReader bufferSchemaReader = new BufferedReader(new FileReader(schemaFilePath));
+					BufferedWriter bufferSchemaWriter = new BufferedWriter(new FileWriter(tmpSchemaFilePath));
+					int schemaCounter=0;
+					String schemaLine = bufferSchemaReader.readLine();
+					while(schemaLine!=null){
+						if(schemaLine.contains("["+tableName+"]") || schemaCounter==1){
+							if(schemaCounter==1){
+								schemaCounter=2;
+							}
+							else{
+								schemaCounter=1;
+							}
+							schemaLine = bufferSchemaReader.readLine();
+							continue;
+						}
+						else{
+							bufferSchemaWriter.append(schemaLine);
+							bufferSchemaWriter.newLine();
+						}
+						schemaLine = bufferSchemaReader.readLine();
+					}
+					bufferSchemaWriter.close();
+					bufferSchemaReader.close();
+					deleteOldSchemaFile.delete();   // deleting old schema text file
+					File newSchemfile = new File(tmpSchemaFilePath);
+					newSchemfile.renameTo(deleteOldSchemaFile);
+					/* Updating strctureAndExport txt File */
+					// creating a new schema file to update it by deleting table details in it
+					dataAndStructureFilePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+"structureAndDataExport.txt";
+					tmpDataAndExportFilePath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/"+"structureAndDataExport_tmp.txt";
+					File deleteOldStructureAndOldFile = new File(dataAndStructureFilePath);
+
+					BufferedReader bufferDataAndExportReader = new BufferedReader(new FileReader(dataAndStructureFilePath));
+					BufferedWriter bufferDataAndExportWriter = new BufferedWriter(new FileWriter(tmpDataAndExportFilePath));
+
+					String dataAndExportlineReader = bufferDataAndExportReader.readLine();
+
+					while(dataAndExportlineReader!=null){
+						if(dataAndExportlineReader.contains(dbName+"."+tableName)){
+							dataAndExportlineReader = bufferDataAndExportReader.readLine();
+							continue;
+						}
+						else{
+							bufferDataAndExportWriter.append(dataAndExportlineReader);
+							bufferDataAndExportWriter.newLine();
+							dataAndExportlineReader = bufferDataAndExportReader.readLine();
+						}
+					}
+					bufferDataAndExportWriter.close();
+					bufferDataAndExportReader.close();
+					// renaming structcureAndExport_tmp as old value.
+					deleteOldStructureAndOldFile.delete(); // delete old structureAndExport txtx file
+					File newStructurefile = new File(tmpDataAndExportFilePath);
+					newStructurefile.renameTo(deleteOldStructureAndOldFile);
+					File deleteOldTableFile = new File(deleteTablePath);
+					deleteOldTableFile.delete();    // deleting table file
+					result = 13;
+				}
+			}
+		}else{
+			result=14;
+		}
+		return result;
 	}
 
 	@Override
-	public void useDb() {
-		// TODO Auto-generated method stub
-
+	public int useDb(String query, Boolean isTransaction) throws IOException {
+		int result=0;
+		String dbName="";
+		if(!query.isEmpty() && query.toLowerCase().contains("use")){
+			String subQuery = query.replace("use", "").trim();
+			//String dbname = QueryOperations.removeSemiColon(subQuery);
+			if(!subQuery.isEmpty()){
+				dbName= isTransaction? "temp"+subQuery : subQuery;
+				if(DatabaseExists.validateDatabaseExistence(dbName)){
+					GlobalSessionDetails.setDbInAction(dbName);
+					result=15;
+				}else{
+					result=16;
+				}
+				// System.out.println("Use "+dbName+" applied");
+			}
+		}else{
+			result=16;
+		}
+		return result;
 	}
-
 }
 
 /*

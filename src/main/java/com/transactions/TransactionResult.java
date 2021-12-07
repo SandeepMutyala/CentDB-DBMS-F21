@@ -20,12 +20,15 @@ public class TransactionResult {
 		}
 	}
 
-	public static void commit() throws IOException {
+	public static void commit(Boolean isCommitAtLastIndex) throws IOException {
+		System.out.println("lastcom"+isCommitAtLastIndex);
 		String directoryPath = GlobalSessionDetails.loggedInUsername + "/";
 		File allDatabases = new File(directoryPath);
 		for (File folder : allDatabases.listFiles()) {
+			System.out.println("Folder"+folder.getName());
 			if (folder.getName().substring(0, 4).contains("temp")) {
 				for (File table : folder.listFiles()) {
+					System.out.println("in forloop");
 					String permanentFilePath = GlobalSessionDetails.getLoggedInUsername() + "/"
 							+ folder.getName().substring(4) + "/" + table.getName();
 					String directorypath = GlobalSessionDetails.getLoggedInUsername() + "/"
@@ -39,11 +42,21 @@ public class TransactionResult {
 						permanentTableFile.createNewFile();
 					}
 					FileWriterClass.createDuplicateCopy(permanentTableFile, table);
-					table.delete();
+					System.out.println(table.getName());
+					if (!isCommitAtLastIndex) {
+						System.out.println();
+						if(!table.getName().equals("schemaDetails.txt") &&
+							!table.getName().equals("StructureAndDataExport.txt")) {
+							table.createNewFile();
+						}
+					} else {
+						table.delete();
+					}
 				}
 			}
-			folder.delete();
+			if (isCommitAtLastIndex) {
+				folder.delete();
+			}
 		}
-
 	}
 }

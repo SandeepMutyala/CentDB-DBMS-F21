@@ -10,34 +10,41 @@ import java.util.*;
 public class TransactionManagement {
     static Scanner sc = new Scanner(System.in);
     public static Boolean executeQuery() {
+        Integer counter = 0;
+        Boolean isCommitAtLastIndex = false;
     	DatabaseOperations dbOperations = new DatabaseOperationsImpl();
         System.out.println("Enter your Query!");
         String queryString = sc.nextLine().toLowerCase();
         if (isQueryFormatValid(queryString)) {
         	String[] queries = queryString.split(";");
         	System.out.println(queries.length);
-            //List<String> queryList = Arrays.asList(queryString.split(";"));
             if (queries.length > 1) {
-                System.out.println("Transaction started!");
-                for (String query : queries) {
-                    query = query.trim();
-                    if (query.equals("rollback")) {
-                        TransactionResult.rollback();
-                    }
-                    if (query.equals("commit")) {
+                if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
+                    System.out.println("Transaction started!");
+                    for (String query : queries) {
+                        counter++;
+                        query = query.trim();
+                        if (query.trim().equals("rollback")) {
+                            TransactionResult.rollback();
+                        }
+                        if (query.trim().equals("commit")) {
+                            isCommitAtLastIndex = counter == queries.length;
+                            try {
+                                TransactionResult.commit(isCommitAtLastIndex);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
                         try {
-							TransactionResult.commit();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+                            queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
-                    try {
-						queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                } else {
+                    System.out.println("Please enter a valid transaction! Missing RollBack or Commit.");
                 }
             } else {
                 System.out.println(queryString);
@@ -55,7 +62,7 @@ public class TransactionManagement {
     }
 
     private static Boolean isQueryFormatValid(String query) {
-        return query.endsWith(";");
+        return query.trim().endsWith(";");
     }
 
     public static void queryOutputAnalysis(int result) {

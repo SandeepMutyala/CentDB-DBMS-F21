@@ -41,6 +41,9 @@ public class QueryAnalyzer {
             case "DELETE":
                 output=dbOperations.deleteATableRecords(formattedQuery, isTransaction);
                 break;
+            case "DROP":
+                output=dbOperations.deleteTable(formattedQuery, isTransaction);
+                break;
 
             default:
         }
