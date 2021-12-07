@@ -13,5 +13,5 @@ public interface DatabaseOperations{
     int fetchTableRecords(String query) throws Exception;
     int updateATableRecords(String query) throws Exception;
     int deleteATableRecords(String query) throws Exception;
-    void deleteTable();
+    int deleteTable(String query) throws IOException;
 }

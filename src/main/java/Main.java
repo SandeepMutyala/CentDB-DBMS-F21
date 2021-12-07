@@ -92,6 +92,10 @@ public class Main {
                 break;
             case 12: System.out.println("Failed to delete records!");
                 break;
+            case 13: System.out.println("Table Dropped successfully");
+                break;
+            case 14: System.out.println("Failed to drop table!");
+                break;
             default: System.out.println("Couldn't perform Operation");
         }
     }

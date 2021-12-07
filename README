@@ -24,3 +24,8 @@ UPDATE university.user SET firstName = "Anita" WHERE id=1;
 DELETE Syntax:
 DELETE FROM table_name WHERE condition;
 DELETE FROM university.user WHERE id=1;
+
+
+DROP SYntax
+DROP TABLE table_name;
+Sample: Drop table university.user;

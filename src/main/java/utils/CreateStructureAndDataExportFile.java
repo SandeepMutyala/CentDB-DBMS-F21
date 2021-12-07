@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class CreateStructureAndDataExportFile {
     public static boolean structureAndDataExportFileCreation(String schemaPath) {
             boolean result=false;
-            String completeSchemaPath = schemaPath + "/" +  "StructureAndDataExport.txt";
+            String completeSchemaPath = schemaPath + "/" +  "structureAndDataExport.txt";
             File schemaFile = new File(completeSchemaPath);
             try{
                 schemaFile.createNewFile();
@@ -24,11 +24,11 @@ public class CreateStructureAndDataExportFile {
 
     public static boolean insertInStructureAndDataExportFile(String query,String path) {
         boolean result=false;
-        String completeSchemaPath=path+"/StructureAndDataExport.txt";;
+        String completeSchemaPath=path+"/structureAndDataExport.txt";;
         /*if(GlobalSessionDetails.getDbInAction().isEmpty()){
-            completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/"+ "StructureAndDataExport.txt";
+            completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/"+ "structureAndDataExport.txt";
         }*/
-       // String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/"+ "StructureAndDataExport.txt";
+       // String completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/"+ "structureAndDataExport.txt";
         try {
             FileWriterClass.writeInFile(query.concat(";"),completeSchemaPath);
             result=true;
