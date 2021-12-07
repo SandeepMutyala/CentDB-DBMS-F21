@@ -7,7 +7,7 @@ Table Creation
 CREATE TABLE university.User ( id INT NOT NULL, firstName VARCHAR(30) NOT NULL, lastName VARCHAR(30) NOT NULL, username VARCHAR(45) NOT NULL, password VARCHAR(64) NOT NULL, confirm_password VARCHAR(64) NOT NULL, role VARCHAR(10) NOT NULL, phone_number BIGINT(10) NOT NULL, PRIMARY KEY (id));
 
 Insert
-INSERT INTO university.User (id,firstName, lastName, usernae, password, confirm_password,role,phone_number) VALUES (2,"Senorita", "Mishra", "anita.mishra2106@gmail.com","123","123","ADMIN","8997463121");
+INSERT INTO university.user (id,firstName, lastName, username, password, confirm_password,role,phone_number) VALUES (2,"Senorita", "Mishra", "anita.mishra2106@gmail.com","123","123","ADMIN","8997463121");
 
 Select with * Syntax
 SELECT * from university.user;
@@ -28,4 +28,4 @@ DELETE FROM university.user WHERE id=1;
 
 DROP SYntax
 DROP TABLE table_name;
-Sample: Drop table university.user;
+Drop table university.user;

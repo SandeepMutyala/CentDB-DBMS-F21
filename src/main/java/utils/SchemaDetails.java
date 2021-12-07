@@ -3,9 +3,9 @@ package utils;
 import java.io.File;
 
 public class SchemaDetails {
-    public static boolean createSchemaFile(String schemaPath) {
+    public static boolean createSchemaFile(String dbName) {
         boolean result=false;
-        String completeSchemaPath = schemaPath + "/" +  "schemaDetails.txt";
+        String completeSchemaPath = GlobalSessionDetails.getLoggedInUsername()+"/"+dbName + "/" +  "schemaDetails.txt";
         File schemaFile = new File(completeSchemaPath);
         try{
             schemaFile.createNewFile();
@@ -17,9 +17,9 @@ public class SchemaDetails {
         }
     }
 
-    public static boolean insertInSchemaFile(String query,String path) {
+    public static boolean insertInSchemaFile(String query,String dbName) {
         boolean result=false;
-        String completeSchemaPath=path+"/schemaDetails.txt";
+        String completeSchemaPath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/schemaDetails.txt";
 
         try {
             FileWriterClass.writeInFile(query.concat(";"),completeSchemaPath);

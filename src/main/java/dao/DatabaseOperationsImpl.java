@@ -34,14 +34,15 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
     public  int createDb(String query){
         int result=0;
         String[] analyseQuery=query.split(" ");
-        String dbPath = GlobalSessionDetails.loggedInUsername+"/";
-        String directoryPath=dbPath.concat(analyseQuery[2]);
+        String dbName = analyseQuery[2];
+        String directoryPath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName;
 
         File directory = new File(directoryPath);
         if (!directory.exists()){
             directory.mkdirs();
-            CreateStructureAndDataExportFile.structureAndDataExportFileCreation(directoryPath);
-            if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,directoryPath)){
+            CreateStructureAndDataExportFile.structureAndDataExportFileCreation(dbName);
+            SchemaDetails.createSchemaFile(dbName);
+            if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName)){
                 result=1;
             }
         }
@@ -69,6 +70,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 // Primary key is must
                 String[] columnDetails=matchResult.group(2).substring(1,matchResult.group(2).length()-1).split(",");
                 String[] removedPrimaryKeyColumnDetails=new String[columnDetails.length-1];
+
                 for(int pi=0;pi<columnDetails.length-1;pi++){
                     removedPrimaryKeyColumnDetails[pi]=columnDetails[pi];
                 }
@@ -78,28 +80,25 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
                 if(DatatypeValidation.validateTableDataType(columnDataType)){
 
-                    // if database name is not in the query
-                    if(separateDbtableName.length<=1){
-                        dbName=GlobalSessionDetails.getDbInAction();
-                        tableName=matchResult.group(1).toLowerCase();
-                        tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
-                    }
-                    // if database name is in query
-                    if(separateDbtableName.length>1){
-                        dbName=separateDbtableName[0];
-                        tableName=separateDbtableName[1].toLowerCase();
-                        tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
+                    if (separateDbtableName.length == 2) {
+                        dbName = separateDbtableName[0].trim();
+                        tableName = separateDbtableName[1].trim().toLowerCase();
+
+                    } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
+                        dbName = GlobalSessionDetails.getDbInAction().trim();
+                        tableName = matchResult.group(1).trim().toLowerCase();
+                        //System.out.println(tableName);
+                    } else {
+                        result = 4;
+                        System.out.println("Either provide dbName or use useDB operation");
                     }
 
                     if(!dbName.isEmpty()){
                         if(DatabaseExists.validateDatabaseExistence(dbName)){
                             //create Table
+                            tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
                             result=createTableFile(dbName,tablePath,tableName,columnDataType,columnName,query);
                         }
-                    }
-                    else{
-                        result=4;
-                        System.out.println("Either provide DB name or perform use db query");
                     }
                 }
                 else{
@@ -142,14 +141,13 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         int result=0;
         if(!tableFile.isFile()){
             tableFile.createNewFile();
-            if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,tableDiectoryPath)){
+            if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName)){
                 // write logic to extract column and datatype from query
-                if(SchemaDetails.createSchemaFile(tableDiectoryPath)){
-                    String formattedColumnDetailsInFile=mergeColumnNameAndValue(columnName,columnDataType,"CREATE");
+               // if(){
+                    String formattedColumnDetailsInFile=mergeColumnNameAndValue(columnName,columnDataType);
                     FileWriterClass.writeInFile("["+tableName.trim().toLowerCase()+"]",tableDiectoryPath+"/schemaDetails.txt");
-                    SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile,tableDiectoryPath);
-
-                }
+                    SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile,dbName);
+               // }
                 result=3;
             }
         }else{
@@ -159,7 +157,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         return result;
     }
 
-    public String mergeColumnNameAndValue(String[] columnNames,String[] columnValues,String operationType){
+    public String mergeColumnNameAndValue(String[] columnNames,String[] columnValues){
         StringBuilder insertStringInFile=new StringBuilder();
         for(int i=0;i<columnNames.length;i++){
             if(i==columnNames.length-1){
@@ -196,7 +194,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         if(matchTableResult.find()) {
             // System.out.println(matchTableResult.group(1)+"Group tabel name");
             String[] separateDbtableName = matchTableResult.group(1).split("\\.");
-            System.out.println(GlobalSessionDetails.getDbInAction().isEmpty()+" pattern find");
+            // System.out.println(GlobalSessionDetails.getDbInAction().isEmpty()+" pattern find");
             if (separateDbtableName.length == 2) {
                 dbName = separateDbtableName[0].trim();
                 tableName = separateDbtableName[1].trim().toLowerCase();
@@ -227,8 +225,11 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                         if(validateProvidedLegitColumns){
                             // checking if values and table column length entered by user is correct or not
                             if (columnNames.length == columnValues.length) {
-                                String formattedInsertStringInFile = mergeColumnNameAndValue(columnNames, columnValues, "INSERT");
+                                String formattedInsertStringInFile = mergeColumnNameAndValue(columnNames, columnValues);
                                 FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
+                                CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName);
+                                //String directoryPath=String directoryPath=dbPath.concat(analyseQuery[2]);
+
                                 // write validation logic before inserting into text file and match if table count is not equal to total length of total columns availabe
                                 // in table then enter null for each column.
                                 result = 5;
@@ -542,9 +543,8 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                             }
 
                     }
-
-
                     result=9;
+                    CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName);
                 }
             }
             else{
@@ -646,6 +646,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                             newfile.renameTo(deleteOldTableFile);
 
                             result = 11;
+                            CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName);
 
                             /*filePath.delete();
                             File newfile = new File(tempFilePath);
@@ -774,7 +775,6 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                     deleteOldStructureAndOldFile.delete(); // delete old structureAndExport txtx file
                     File newStructurefile = new File(tmpDataAndExportFilePath);
                     newStructurefile.renameTo(deleteOldStructureAndOldFile);
-
 
 
                     File deleteOldTableFile = new File(deleteTablePath);

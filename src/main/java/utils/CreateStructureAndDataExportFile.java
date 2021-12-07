@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class CreateStructureAndDataExportFile {
-    public static boolean structureAndDataExportFileCreation(String schemaPath) {
+    public static boolean structureAndDataExportFileCreation(String dbName) {
             boolean result=false;
-            String completeSchemaPath = schemaPath + "/" +  "structureAndDataExport.txt";
+            String completeSchemaPath = GlobalSessionDetails.getLoggedInUsername()+"/"+dbName + "/" +  "structureAndDataExport.txt";
             File schemaFile = new File(completeSchemaPath);
             try{
                 schemaFile.createNewFile();
@@ -22,9 +22,9 @@ public class CreateStructureAndDataExportFile {
             }
     }
 
-    public static boolean insertInStructureAndDataExportFile(String query,String path) {
+    public static boolean insertInStructureAndDataExportFile(String query,String dbName) {
         boolean result=false;
-        String completeSchemaPath=path+"/structureAndDataExport.txt";;
+        String completeSchemaPath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/structureAndDataExport.txt";
         /*if(GlobalSessionDetails.getDbInAction().isEmpty()){
             completeSchemaPath = GlobalSessionDetails.loggedInUsername + "/" + GlobalSessionDetails.dbInAction+"/"+ "structureAndDataExport.txt";
         }*/
