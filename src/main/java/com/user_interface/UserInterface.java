@@ -51,11 +51,7 @@ public class UserInterface {
 				System.out.println("Please enter the database name to generate ERD");
 				Scanner scanner = new Scanner(System.in);
 				String dbName = scanner.nextLine().toLowerCase();
-				try {
-					generateERD.createERD(dbName);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
+				generateERD.createERD(dbName);
 				break;
 			case 4: // performAnalytics();
 				break;
