@@ -268,6 +268,9 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 									}
 									FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
 								}
+								else{
+									FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
+								}
 							}else {
 							FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
 							}

@@ -12,6 +12,7 @@ public class TransactionManagement {
     public static Boolean executeQuery() {
         Integer counter = 0;
         Boolean isCommitAtLastIndex = false;
+        Boolean isRollbackAtLastIndex = false;
     	DatabaseOperations dbOperations = new DatabaseOperationsImpl();
         System.out.println("Enter your Query!");
         String queryString = sc.nextLine().toLowerCase();
@@ -25,14 +26,15 @@ public class TransactionManagement {
                         counter++;
                         query = query.trim();
                         if (query.trim().equals("rollback")) {
-                            TransactionResult.rollback();
+                            isRollbackAtLastIndex = counter == queries.length;
+                                TransactionResult.rollback(isRollbackAtLastIndex);
+
                         }
                         if (query.trim().equals("commit")) {
                             isCommitAtLastIndex = counter == queries.length;
                             try {
                                 TransactionResult.commit(isCommitAtLastIndex);
                             } catch (IOException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }

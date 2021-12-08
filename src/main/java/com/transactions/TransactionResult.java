@@ -6,29 +6,38 @@ import java.io.File;
 import java.io.IOException;
 
 public class TransactionResult {
-	public static void rollback() {
+	public static void rollback(Boolean isRollbackAtLastIndex) {
 		String directoryPath = GlobalSessionDetails.loggedInUsername + "/";
 		File allFolders = new File(directoryPath);
 		for (File folder : allFolders.listFiles()) {
-			System.out.println(folder.getName().substring(0, 4));
 			if (folder.getName().substring(0, 4).equals("temp")) {
 				for (File file : folder.listFiles()) {
-					file.delete();
+					if (!isRollbackAtLastIndex) {
+						if(!file.getName().equals("schemaDetails.txt") && !file.getName().equals("StructureAndDataExport.txt")) {
+							try {
+								file.delete();
+								file.createNewFile();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					} else {
+						file.delete();
+					}
 				}
 			}
-			folder.delete();
+			if (isRollbackAtLastIndex) {
+				folder.delete();
+			}
 		}
 	}
 
 	public static void commit(Boolean isCommitAtLastIndex) throws IOException {
-		System.out.println("lastcom"+isCommitAtLastIndex);
 		String directoryPath = GlobalSessionDetails.loggedInUsername + "/";
 		File allDatabases = new File(directoryPath);
 		for (File folder : allDatabases.listFiles()) {
-			System.out.println("Folder"+folder.getName());
 			if (folder.getName().substring(0, 4).contains("temp")) {
 				for (File table : folder.listFiles()) {
-					System.out.println("in forloop");
 					String permanentFilePath = GlobalSessionDetails.getLoggedInUsername() + "/"
 							+ folder.getName().substring(4) + "/" + table.getName();
 					String directorypath = GlobalSessionDetails.getLoggedInUsername() + "/"
@@ -42,7 +51,6 @@ public class TransactionResult {
 						permanentTableFile.createNewFile();
 					}
 					FileWriterClass.createDuplicateCopy(permanentTableFile, table);
-					System.out.println(table.getName());
 					if (!isCommitAtLastIndex) {
 						System.out.println();
 						if(!table.getName().equals("schemaDetails.txt") &&
