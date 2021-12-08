@@ -15,6 +15,10 @@ SELECT * from university.user;
 Select when column name is specified
 SELECT firstName, lastName, username, password from university.user;
 
+Select with where clause:
+SELECT * from university.user where id=1;
+SELECT firstName from university.user where id=1;
+
 
 Update Syntax:
 UPDATE table_name SET column1 = value1 WHERE condition;
