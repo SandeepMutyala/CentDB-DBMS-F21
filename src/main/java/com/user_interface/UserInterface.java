@@ -2,8 +2,9 @@ package com.user_interface;
 
 import com.security.UserLogin;
 import com.transactions.TransactionManagement;
+
+import erdGeneration.generateERD;
 import utils.Constants;
-import EDRGeneration.generateERD;
 
 import java.io.FileNotFoundException;
 import java.util.Scanner;

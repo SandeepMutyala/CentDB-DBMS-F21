@@ -1,4 +1,4 @@
-package EDRGeneration;
+package erdGeneration;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

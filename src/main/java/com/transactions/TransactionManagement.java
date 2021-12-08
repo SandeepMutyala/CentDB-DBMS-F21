@@ -23,6 +23,7 @@ public class TransactionManagement {
                 if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
                     System.out.println("Transaction started!");
                     for (String query : queries) {
+                    	System.out.println(query);
                         counter++;
                         query = query.trim();
                         if (query.trim().equals("rollback")) {
@@ -40,7 +41,7 @@ public class TransactionManagement {
                         }
                         try {
                         	QueryAnalyzer analyzer = QueryAnalyzer.getInstance();
-        					queryOutputAnalysis(analyzer.splitQuery(queryString, dbOperations, true));
+        					queryOutputAnalysis(analyzer.splitQuery(query, dbOperations, true));
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
