@@ -82,27 +82,34 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 
 
                 if(DatatypeValidation.validateTableDataType(columnDataType)){
+                    // checking if primary Key exists in the column definition
+                    if(this.validatePrimaryKey(primaryKey,columnName)){
+                        if (separateDbtableName.length == 2) {
+                            dbName = separateDbtableName[0].trim();
+                            tableName = separateDbtableName[1].trim().toLowerCase();
 
-                    if (separateDbtableName.length == 2) {
-                        dbName = separateDbtableName[0].trim();
-                        tableName = separateDbtableName[1].trim().toLowerCase();
+                        } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
+                            dbName = GlobalSessionDetails.getDbInAction().trim();
+                            tableName = matchResult.group(1).trim().toLowerCase();
+                            //System.out.println(tableName);
+                        } else {
+                            result = 4;
+                            System.out.println("Either provide dbName or use useDB operation");
+                        }
 
-                    } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
-                        dbName = GlobalSessionDetails.getDbInAction().trim();
-                        tableName = matchResult.group(1).trim().toLowerCase();
-                        //System.out.println(tableName);
-                    } else {
-                        result = 4;
-                        System.out.println("Either provide dbName or use useDB operation");
-                    }
-
-                    if(!dbName.isEmpty()){
-                        if(DatabaseExists.validateDatabaseExistence(dbName)){
-                            //create Table
-                            tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
-                            result=createTableFile(dbName,tablePath,tableName,columnDataType,columnName,query,primaryKey.trim());
+                        if(!dbName.isEmpty()){
+                            if(DatabaseExists.validateDatabaseExistence(dbName)){
+                                //create Table
+                                tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
+                                result=createTableFile(dbName,tablePath,tableName,columnDataType,columnName,query,primaryKey.trim());
+                            }
                         }
                     }
+                    else{
+                        result=4;
+                        System.out.println("Primary key provided does not exists in column definitaion");
+                    }
+
                 }
                 else{
                     System.out.println("Please select valid datatype");
@@ -859,7 +866,15 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         return result;
     }
 
-    public void validatePrimaryKey(String query){
+    public boolean validatePrimaryKey(String primaryKey,String[] columns){
+        boolean validatedPrimaryKey=false;
+        String actualPrimaryKey=primaryKey.substring(primaryKey.indexOf("(")+1,primaryKey.indexOf(")"));
+        for(int i=0;i<columns.length;i++){
+            if(columns[i].trim().toLowerCase().equals(actualPrimaryKey.trim().toLowerCase())){
+                validatedPrimaryKey=true;
+            }
+        }
 
+        return validatedPrimaryKey;
     }
 }
