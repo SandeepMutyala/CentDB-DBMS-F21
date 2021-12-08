@@ -1,0 +1,6 @@
+create database university;
+create table university.user ( id int not null, firstname varchar(30) not null, lastname varchar(30) not null, username varchar(45) not null, password varchar(64) not null, confirm_password varchar(64) not null, role varchar(10) not null, phone_number bigint(10) not null, primary key (id));
+insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (4,"sampada", "thakkar", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
+insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (3,"mayank", "sareen", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
+update university.user set firstname = "sampada" where id=3;
+delete from university.user where id=3;

@@ -11,8 +11,17 @@ public class QueryAnalyzer {
     /*QueryAnalyzer(DatabaseOperations dbOperations){
         this.dbOperations=dbOperations;
     }*/
-
-    public  static int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws Exception {
+	private static QueryAnalyzer ANALYZER;
+	private QueryAnalyzer() {
+		
+	}
+	public static QueryAnalyzer getInstance() {
+		if(ANALYZER == null) {
+			ANALYZER = new QueryAnalyzer();
+		}
+		return ANALYZER;
+	}
+    public int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws Exception {
         String formattedQuery = isTransaction ? query : removeSemiColon(query);
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
