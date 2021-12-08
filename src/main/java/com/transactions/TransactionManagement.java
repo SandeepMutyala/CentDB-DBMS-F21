@@ -20,6 +20,11 @@ public class TransactionManagement {
         	String[] queries = queryString.split(";");
         	System.out.println(queries.length);
             if (queries.length > 1) {
+                try {
+                    Thread.sleep(queries.length *1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 //                if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
                     System.out.println("Transaction started!");
                     for (String query : queries) {
