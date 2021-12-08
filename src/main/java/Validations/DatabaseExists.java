@@ -1,6 +1,7 @@
 package Validations;
 
 import utils.GlobalSessionDetails;
+import utils.LogPrinter;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,8 @@ public class DatabaseExists {
             }
             else{
                 System.out.println("Database doesn't exists");
+                LogPrinter print = LogPrinter.getInstanceObject();
+                print.errorPrinter("Database named  " + dbName + " doesn't exists.");
             }
         }
         return false;

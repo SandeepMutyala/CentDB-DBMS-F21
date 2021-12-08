@@ -27,9 +27,9 @@ public class Logger {
         return instanceObject;
     }
 
-    public static String generalLogFilePath = "src/main/java/com/logs/GeneralLogs.txt";
-    public static String eventLogFilePath = "src/main/java/com/logs/EventLogs.txt";
-    public static String queryLogFilePath = "src/main/java/com/logs/QueryLogs.txt";
+    public static String generalLogFilePath = "src/main/java/com/generatedlogs/GeneralLogs.txt";
+    public static String eventLogFilePath = "src/main/java/com/generatedlogs/EventLogs.txt";
+    public static String queryLogFilePath = "src/main/java/com/generatedlogs/QueryLogs.txt";
     final LogPrinter printer = LogPrinter.getInstanceObject();
 
     FileWriter eventLog;

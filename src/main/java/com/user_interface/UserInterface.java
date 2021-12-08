@@ -1,6 +1,7 @@
 package com.user_interface;
 
 import com.security.UserLogin;
+import com.security.UserRegistration;
 import com.transactions.TransactionManagement;
 import utils.Constants;
 import EDRGeneration.generateERD;
@@ -21,7 +22,7 @@ public class UserInterface {
 		choice = sc.nextInt();
 		switch (choice) {
 			case 1:
-				isSuccessResponse = true;// UserRegistration.registerUser();
+				isSuccessResponse = /*true;*/ UserRegistration.registerUser();
 				break;
 			case 2:
 				isSuccessResponse = UserLogin.userLogin();
