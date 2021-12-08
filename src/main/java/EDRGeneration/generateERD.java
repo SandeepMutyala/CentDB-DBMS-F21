@@ -29,14 +29,17 @@ public class generateERD {
 					System.out.println("Inside fetch table name");
 					columnNamesList = Arrays.asList(line.split("#"));
 					fetchTableName = false;
-					break;
+					//break;
 				}
 				if (line.matches("\\[{1}\\w*\\]")) {
 					fetchTableName = true;
 				}
 				myWriter.write(line);
 				myWriter.write('\n');
-				myWriter.write(String.join(",",columnNamesList));
+				for (String str: columnNamesList) {
+					myWriter.write(str);
+					myWriter.write('\n');	
+				}
 				line = br.readLine();
 			}
 		 
