@@ -58,6 +58,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         String tableName="";
         String[] columnName;
         String[] columnDataType;
+        String primaryKey="";
 
         //Pattern to get table name and DBname
         Pattern tablePattern = Pattern.compile(Constants.DB_TABLE_NAME_CREATE_SEPARATOR_PATTERN, Pattern.CASE_INSENSITIVE);
@@ -70,6 +71,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 // Primary key is must
                 String[] columnDetails=matchResult.group(2).substring(1,matchResult.group(2).length()-1).split(",");
                 String[] removedPrimaryKeyColumnDetails=new String[columnDetails.length-1];
+                primaryKey=columnDetails[columnDetails.length-1];
 
                 // CREATE TABLE db1.testTable4 (OrderID int ,OrderNumber int ,PersonID int,PRIMARY KEY (OrderID),FOREIGN KEY (PersonID) REFERENCES testTable1(PersonID));
                 for(int pi=0;pi<columnDetails.length-1;pi++){
@@ -98,7 +100,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                         if(DatabaseExists.validateDatabaseExistence(dbName)){
                             //create Table
                             tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
-                            result=createTableFile(dbName,tablePath,tableName,columnDataType,columnName,query);
+                            result=createTableFile(dbName,tablePath,tableName,columnDataType,columnName,query,primaryKey.trim());
                         }
                     }
                 }
@@ -136,7 +138,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         return columnName;
     }
 
-    public int createTableFile(String dbName,String tablePath,String tableName,String[] columnDataType,String[] columnName, String query) throws IOException {
+    public int createTableFile(String dbName,String tablePath,String tableName,String[] columnDataType,String[] columnName, String query,String primaryKey) throws IOException {
         String tableDiectoryPath=GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/";
         File tableFile = new File(tablePath);
         int result=0;
@@ -148,6 +150,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                     String formattedColumnDetailsInFile=mergeColumnNameAndValue(columnName,columnDataType);
                     FileWriterClass.writeInFile("["+tableName.trim().toLowerCase()+"]",tableDiectoryPath+"/schemaDetails.txt");
                     SchemaDetails.insertInSchemaFile(formattedColumnDetailsInFile,dbName);
+                    FileWriterClass.writeInFile("["+primaryKey+"]",tableDiectoryPath+"/schemaDetails.txt");
                // }
                 result=3;
             }
@@ -854,5 +857,9 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
             result=16;
         }
         return result;
+    }
+
+    public void validatePrimaryKey(String query){
+
     }
 }
