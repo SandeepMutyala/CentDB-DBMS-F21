@@ -5,7 +5,7 @@ import java.util.List;
 
 public class DatatypeValidation {
 
-    private static List<String> dataType= Arrays.asList("INT","VARCHAR","BOOLEAN","BIGINT");
+    private static List<String> dataType= Arrays.asList("INT","int","VARCHAR","varchar","BOOLEAN","boolean","BIGINT","bigint");
     private DatatypeValidation(){}
 
     public List<String> getDataType() {
@@ -20,12 +20,15 @@ public class DatatypeValidation {
             String[] strVarchar=columnDatatype[i].split("\\(");
             if(strVarchar.length>1){
                 if(!dataType.contains(strVarchar[0])){
+                	System.out.println(strVarchar[0]);
                     result=false;
                     break;
                 }
             }
             else{
                 if(!dataType.contains(columnDatatype[i])){
+                	
+                	System.out.println(columnDatatype[i]);
                     result=false;
                     break;
                 }
@@ -33,11 +36,5 @@ public class DatatypeValidation {
 
         }
         return result;
-    }
-
-    public static boolean validateDataTypeWhileInserting(String columnName, String columnValues){
-        // read from the schemDetails file and then get the line where tableName matches with hthe passed tableName
-        // match the column name with the file column Name, also it's datatype with the file read.
-        return false;
     }
 }

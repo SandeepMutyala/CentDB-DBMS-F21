@@ -12,38 +12,41 @@ public class QueryAnalyzer {
         this.dbOperations=dbOperations;
     }*/
 
-    public  static int splitQuery(String query,DatabaseOperations dbOperations) throws Exception {
-        String formattedQuery=removeSemiColon(query);
+    public  static int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws Exception {
+        String formattedQuery = isTransaction ? query : removeSemiColon(query);
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
         // for(int i=0;i<analyseQuery.length;i++){
+        System.out.println("formattedQ  "+formattedQuery);
         switch(analyseQuery[0].toUpperCase()){
             case "CREATE":
                 if(analyseQuery[1].equalsIgnoreCase("DATABASE") || analyseQuery[1].equalsIgnoreCase("SCHEMA")){
-                    output=dbOperations.createDb(formattedQuery);
+                    output=dbOperations.createDb(formattedQuery, isTransaction);
 
                 }
                 if(analyseQuery[1].equalsIgnoreCase("TABLE")){
-                    output=dbOperations.createTable(formattedQuery);
+                    System.out.println("in");
+                    output = dbOperations.createTable(formattedQuery, isTransaction);
                 }
                 break;
             case "INSERT":
-                output=dbOperations.insertInTable(formattedQuery);
+                dbOperations.insertInTable(formattedQuery, isTransaction);
                 break;
             case "SELECT":
-                output=dbOperations.fetchTableRecords(formattedQuery);
+                output=dbOperations.fetchTableRecords(formattedQuery, isTransaction);
                 break;
             case "UPDATE":
-                output=dbOperations.updateATableRecords(formattedQuery);
+                output=dbOperations.updateATableRecords(formattedQuery, isTransaction);
                 break;
             case "DELETE":
-                output=dbOperations.deleteATableRecords(formattedQuery);
+                output=dbOperations.deleteATableRecords(formattedQuery, isTransaction);
                 break;
             case "DROP":
-                output=dbOperations.deleteTable(formattedQuery);
+                output=dbOperations.deleteTable(formattedQuery, isTransaction);
                 break;
+
             case "USE":
-                output=dbOperations.useDb(formattedQuery);
+                output=dbOperations.useDb(formattedQuery, isTransaction);
                 break;
             default:
         }

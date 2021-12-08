@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="52946c5e-de5f-4357-b053-bbff9496b134" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/EDRGeneration/generateERD.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Main.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Validations/DatabaseExists.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Validations/DatatypeValidation.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Validations/TableExistence.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/security/UserLogin.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/security/Utils.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionManagement.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionManagement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionResult.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/user_interface/UserInterface.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/user_interface/UserInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperations.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dao/UserDaoImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dao/genericDao.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dao/userDao.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/model/User.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/Constants.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/CreateStructureAndDataExportFile.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/FileComparison.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/FileWriterClass.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/GlobalSessionDetails.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/QueryAnalyzer.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/utils/SchemaDetails.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tempStructureAndDataExport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data5408.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README" beforeDir="false" afterPath="$PROJECT_DIR$/README" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/User_Profile.txt" beforeDir="false" afterPath="$PROJECT_DIR$/User_Profile.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Validations/DatatypeValidation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Validations/DatatypeValidation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/security/OTP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/security/OTP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/FileWriterClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/FileWriterClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/QueryAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/QueryAnalyzer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/SchemaDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/SchemaDetails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="219ms8brh5wrW0jPMfGul62Xu2r" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../CS 5308 Adv Software/Project/Project Code/group25" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
+  </component>
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.Main" />
+      <module name="Data5408" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="Data5408" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main (1)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="52946c5e-de5f-4357-b053-bbff9496b134" name="Changes" comment="" />
+      <created>1637361883519</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1637361883519</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java</url>
+          <line>15</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java</url>
+          <line>181</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/utils/SchemaDetails.java</url>
+          <line>34</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/utils/SchemaDetails.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/utils/SchemaDetails.java</url>
+          <line>26</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java</url>
+          <line>175</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
