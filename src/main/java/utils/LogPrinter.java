@@ -29,11 +29,9 @@ public class LogPrinter {
         if (type.equals("table")) {
             BufferedReader br = null;
             try {
-                //String dbPath = GlobalSessionDetails.getLoggedInUsername() + "/" ;
                 String currentPath = (new File(".")).getCanonicalPath();
                 String dbFilePath = currentPath+"\\"+GlobalSessionDetails.getLoggedInUsername() + "\\"+ dbname +"\\schemaDetails.txt";
                 br = new BufferedReader(new FileReader(dbFilePath));
-                //br = new BufferedReader(new FileReader("21b90964dd770544d14ee67b261b4adb/dal/schemaDetails.txt"));
                 String data = null;
                 while ((data = br.readLine()) != null) {
                     if (data.matches("\\[{1}\\w*\\]")) {
@@ -54,12 +52,9 @@ public class LogPrinter {
         if (type.equals("insert")) {
             BufferedReader br = null;
             try {
-                //String dbPath = GlobalSessionDetails.getLoggedInUsername() + "/" ;
-                //String exportFilePath = dbPath + "/" + "structureAndDataExport.txt";
                 String currentPath = (new File(".")).getCanonicalPath();
                 String dbFilePath = currentPath+"\\"+GlobalSessionDetails.getLoggedInUsername() + "\\"+ dbname +"\\structureAndDataExport.txt";
                 br = new BufferedReader(new FileReader(dbFilePath));
-                //br = new BufferedReader(new FileReader("21b90964dd770544d14ee67b261b4adb/dal/StructureAndDataExport.txt"));
                 String data = null;
                 while ((data = br.readLine()) != null) {
                     if (data.toLowerCase().contains("insert into")) {
@@ -82,7 +77,6 @@ public class LogPrinter {
                 String currentPath = (new File(".")).getCanonicalPath();
                 String dbFilePath = currentPath+"\\"+GlobalSessionDetails.getLoggedInUsername() + "\\"+ dbname +"\\structureAndDataExport.txt";
                 br = new BufferedReader(new FileReader(dbFilePath));
-                //br = new BufferedReader(new FileReader("21b90964dd770544d14ee67b261b4adb/dal/StructureAndDataExport.txt"));
                 String data = null;
                 while ((data = br.readLine()) != null) {
                     if (data.toLowerCase().contains("update")) {
@@ -105,7 +99,6 @@ public class LogPrinter {
                 String currentPath = (new File(".")).getCanonicalPath();
                 String dbFilePath = currentPath+"\\"+GlobalSessionDetails.getLoggedInUsername() + "\\"+ dbname +"\\structureAndDataExport.txt";
                 br = new BufferedReader(new FileReader(dbFilePath));
-                //br = new BufferedReader(new FileReader("21b90964dd770544d14ee67b261b4adb/dal/StructureAndDataExport.txt"));
                 String data = null;
                 while ((data = br.readLine()) != null) {
                     if (data.toLowerCase().contains("delete")) {
@@ -157,7 +150,6 @@ public class LogPrinter {
     }
 
     public void queryMessagePrinter(String messageContent) {
-        //System.out.println("Write to query log");
         Logger.getInstanceObject().sendDataToQueryLogFile(messageContent);
     }
 }

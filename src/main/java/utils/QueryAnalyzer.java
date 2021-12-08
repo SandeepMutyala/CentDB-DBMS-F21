@@ -17,7 +17,7 @@ public class QueryAnalyzer {
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
         // for(int i=0;i<analyseQuery.length;i++){
-        System.out.println("formattedQ  "+formattedQuery);
+        //System.out.println("formattedQ  "+formattedQuery);
         switch(analyseQuery[0].toUpperCase()){
             case "CREATE":
                 if(analyseQuery[1].equalsIgnoreCase("DATABASE") || analyseQuery[1].equalsIgnoreCase("SCHEMA")){

@@ -1,0 +1,96 @@
+	
+| Dec/08/2021 - 17:52:08 - Wed |
+
+The table named student has been created by 21b90964dd770544d14ee67b261b4adb in the database named dal.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 17:53:22 - Wed |
+
+User 21b90964dd770544d14ee67b261b4adb inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table student inside a database named dal.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:02:12 - Wed |
+
+The table named student has been created by 21b90964dd770544d14ee67b261b4adb in the database named dalousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:04:04 - Wed |
+
+The table named student has been created by 21b90964dd770544d14ee67b261b4adb in the database named dalhousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:04:52 - Wed |
+
+The table named student has been created by 21b90964dd770544d14ee67b261b4adb in the database named dal.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:07:55 - Wed |
+
+The table named student has been created by 03c7c0ace395d80182db07ae2c30f034 in the database named dalu.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:08:52 - Wed |
+
+The table named faculty has been created by 03c7c0ace395d80182db07ae2c30f034 in the database named dalu.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:09:16 - Wed |
+
+User 03c7c0ace395d80182db07ae2c30f034 inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table student inside a database named dalu.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:13:55 - Wed |
+
+User 03c7c0ace395d80182db07ae2c30f034 inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table student inside a database named dalu.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:14:37 - Wed |
+
+User 03c7c0ace395d80182db07ae2c30f034 inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table student inside a database named dalu.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:14:47 - Wed |
+
+Select query is executed by 03c7c0ace395d80182db07ae2c30f034 on the database dalu
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:15:43 - Wed |
+
+Update query has been successfully executed by user 03c7c0ace395d80182db07ae2c30f034 on the database 
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:20:42 - Wed |
+
+Update query has been successfully executed by user 03c7c0ace395d80182db07ae2c30f034 on the database dalu
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:21:27 - Wed |
+
+Select query is executed by 03c7c0ace395d80182db07ae2c30f034 on the database dalu
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:21:43 - Wed |
+
+Update query has been successfully executed by user 03c7c0ace395d80182db07ae2c30f034 on the database dalu
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/08/2021 - 18:22:00 - Wed |
+
+Successfully deleted a row in the table student on the database dalu given by user 03c7c0ace395d80182db07ae2c30f034
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------

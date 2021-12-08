@@ -84,23 +84,26 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				columnDataType = fetchColumnDataType(removedPrimaryKeyColumnDetails);
 				//System.out.println(columnDataType[0]);
 				columnName = fetchColumnName(removedPrimaryKeyColumnDetails);
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.queryMessagePrinter("The table named "+ tableName + " has been created by " + GlobalSessionDetails.loggedInUsername+ " in the database named "+ dbName+ ".");
-                print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has ","table");
+//                LogPrinter print = LogPrinter.getInstanceObject();
+//                print.queryMessagePrinter("The table named "+ tableName + " has been created by " + GlobalSessionDetails.loggedInUsername+ " in the database named "+ dbName+ ".");
+//                print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has ","table", dbName);
 
 				if (DatatypeValidation.validateTableDataType(columnDataType)) {
                     if(validatePrimaryKey(primaryKey,columnName)){
                         if (separateDbtableName.length == 2) {
                             dbName = isTransaction?"temp"+separateDbtableName[0].trim():separateDbtableName[0].trim();
                             tableName = separateDbtableName[1].trim().toLowerCase();
-//
+                            LogPrinter print = LogPrinter.getInstanceObject();
+                            print.queryMessagePrinter("The table named "+ tableName + " has been created by " + GlobalSessionDetails.loggedInUsername+ " in the database named "+ dbName+ ".");
+                            print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has ","table", dbName);
+
                         } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
                             dbName = GlobalSessionDetails.getDbInAction().trim();
                             tableName = matchResult.group(1).trim().toLowerCase();
                         } else {
                             result = 4;
                             System.out.println("Either provide dbName or use useDB operation");
-                            //LogPrinter print = LogPrinter.getInstanceObject();
+                            LogPrinter print = LogPrinter.getInstanceObject();
                             print.errorPrinter("Database "+ dbName + " provided by " + GlobalSessionDetails.getLoggedInUsername() +  " doesn't exist.");
                         }
 
@@ -132,7 +135,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                     }else{
                         result=4;
                         System.out.println("Primary key provided does not exists in column definition");
-                        //LogPrinter print = LogPrinter.getInstanceObject();
+                        LogPrinter print = LogPrinter.getInstanceObject();
                         print.errorPrinter("Primary key doesn't exist in the database "+dbName+" provided by user " + GlobalSessionDetails.loggedInUsername);
                     }
 
@@ -307,6 +310,10 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                                 }
                                                 FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
                                                 CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName);
+                                                LogPrinter print = LogPrinter.getInstanceObject();
+                                                print.queryMessagePrinter("User "+ GlobalSessionDetails.getLoggedInUsername() + " inserted columns named " +matchColumnValueResult.group(1) + " in table "+ tableName+ " inside a database named "+ dbName + ".");
+                                                print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"insert",dbName);
+
                                             } else {
                                                 FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
                                                 CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName);
@@ -324,7 +331,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                             //System.out.println(insertStringInFile+"Hello string");
                                             LogPrinter print = LogPrinter.getInstanceObject();
                                             print.queryMessagePrinter("User "+ GlobalSessionDetails.getLoggedInUsername() + " inserted columns named " +matchColumnValueResult.group(1) + " in table "+ tableName+ " inside a database named "+ dbName + ".");
-                                            print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"insert");
+                                            print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"insert",dbName);
                                         }
 
                                     } else {
@@ -648,10 +655,6 @@ return result;
             Matcher whereMatcher = wherePattern.matcher(query);
             if (matcherDBTable.find()) {
                 String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.queryMessagePrinter("Update query has been successfully executed by user " + GlobalSessionDetails.loggedInUsername+ " on the database "+ dbName);
-                print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"update");
-
                 // to check if user entered db and table name in query. if not then check if
                 // global session contains value, if not then SOp, db absent
                 if (separateDbtableName.length == 2) {
@@ -659,6 +662,9 @@ return result;
                     tableName = separateDbtableName[1].trim().toLowerCase();
                     //System.out.println(dbName);
                     //System.out.println(tableName);
+                    LogPrinter print = LogPrinter.getInstanceObject();
+                    print.queryMessagePrinter("Update query has been successfully executed by user " + GlobalSessionDetails.loggedInUsername+ " on the database "+ dbName);
+                    print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"update",dbName);
 
                 } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
                     dbName = GlobalSessionDetails.getDbInAction().trim();
@@ -666,6 +672,7 @@ return result;
                 } else {
                     result = 10;
                     System.out.println("Either provide dbName or use useDB operation");
+                    LogPrinter print = LogPrinter.getInstanceObject();
                     print.errorPrinter("Provided database by user " + GlobalSessionDetails.loggedInUsername + " doesn't exist.");
                 }
 
@@ -806,8 +813,8 @@ return result;
                     dbName = isTransaction ? "temp" + separateDbtableName[0].trim() : separateDbtableName[0].trim();
                     tableName = separateDbtableName[1].trim().toLowerCase();
                     LogPrinter print = LogPrinter.getInstanceObject();
-                    print.queryMessagePrinter("Successfully deleted the table " +tableName + " on the database " +dbName+ " given by user "+GlobalSessionDetails.loggedInUsername);
-                    print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"delete");
+                    print.queryMessagePrinter("Successfully deleted a row in the table " +tableName + " on the database " +dbName+ " given by user "+GlobalSessionDetails.loggedInUsername);
+                    print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"delete",dbName);
 
                 } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
                     dbName = GlobalSessionDetails.getDbInAction().trim();
