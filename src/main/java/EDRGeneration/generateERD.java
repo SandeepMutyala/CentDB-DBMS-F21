@@ -34,9 +34,12 @@ public class generateERD {
 				if (line.matches("\\[{1}\\w*\\]")) {
 					fetchTableName = true;
 				}
-
+				myWriter.write(line);
+				myWriter.write('\n');
+				myWriter.write(String.join(",",columnNamesList));
 				line = br.readLine();
 			}
+		 
 			br.close();
 			myWriter.close();
 		} catch (IOException e) {
