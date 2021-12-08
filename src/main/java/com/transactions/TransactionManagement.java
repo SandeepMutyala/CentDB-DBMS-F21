@@ -20,7 +20,7 @@ public class TransactionManagement {
         	String[] queries = queryString.split(";");
         	System.out.println(queries.length);
             if (queries.length > 1) {
-                if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
+//                if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
                     System.out.println("Transaction started!");
                     for (String query : queries) {
                     	System.out.println(query);
@@ -47,9 +47,9 @@ public class TransactionManagement {
                             e.printStackTrace();
                         }
                     }
-                } else {
-                    System.out.println("Please enter a valid transaction! Missing RollBack or Commit.");
-                }
+//                } else {
+//                    System.out.println("Please enter a valid transaction! Missing RollBack or Commit.");
+//                }
             } else {
                 System.out.println(queryString);
 				try {

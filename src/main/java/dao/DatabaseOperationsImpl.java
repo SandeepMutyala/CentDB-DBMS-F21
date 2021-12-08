@@ -107,12 +107,28 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                     System.out.println("On line 107");
                                     String permanentTablePath = GlobalSessionDetails.getLoggedInUsername()
                                             .concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
+                                    String permanentStructureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
+                                            .concat("/" + dbName.substring(4) + "/structureAndDataExport") + ".txt";
+                                    String permanentSchemaDetails = GlobalSessionDetails.getLoggedInUsername()
+                                            .concat("/" + dbName.substring(4) + "/schemaDetails") + ".txt";
                                     File permanentTable = new File(permanentTablePath);
+                                    File permanentStructureAndDataExportFile = new File(permanentStructureAndDataExport);
+                                    File permanentSchemaDetailsFile = new File(permanentSchemaDetails);
                                     if (permanentTable.exists()) {
                                         System.out.println("create");
+                                        tablePath =GlobalSessionDetails.getLoggedInUsername()
+                                                .concat("/" + dbName + "/" + tableName) + ".txt";
+                                        String schemaDetailsTempPath = GlobalSessionDetails.getLoggedInUsername()
+                                                .concat("/" + dbName + "/structureAndDataExport") + ".txt";
+                                        String structureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
+                                                .concat("/" + dbName + "/schemaDetails") + ".txt";
                                         File tempTable = new File(tablePath);
+                                        File schemaDetailsTempPathFile = new File(schemaDetailsTempPath);
+                                        File structureAndDataExportFile = new File(structureAndDataExport);
                                         tempTable.createNewFile();
-                                        //FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
+                                        FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
+                                        FileWriterClass.createDuplicateCopy(schemaDetailsTempPathFile, permanentSchemaDetailsFile);
+                                        FileWriterClass.createDuplicateCopy(structureAndDataExportFile, permanentStructureAndDataExportFile);
                                     }
                                     tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
                                     result = createTableFile(dbName, tablePath, tableName, columnDataType, columnName,
