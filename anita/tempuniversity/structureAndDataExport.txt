@@ -4,3 +4,7 @@ insert into university.user (id,firstname, lastname, username, password, confirm
 insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (3,"mayank", "sareen", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
 update university.user set firstname = "sampada" where id=3;
 delete from university.user where id=3;
+create database university;
+insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (7,"sampada", "thakkar", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
+insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (9,"mayank", "sareen", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
+update university.user set firstname = "sampadaaa" where id=9;

@@ -128,10 +128,10 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                         tempTable.createNewFile();
                                         //FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
                                        
-                                    }
+                                    }else {
                                     tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
-                                    //result = createTableFile(dbName, tablePath, tableName, columnDataType, columnName,
-                                            //query, isTransaction,primaryKey);
+                                    result = createTableFile(dbName, tablePath, tableName, columnDataType, columnName,
+                                            query, isTransaction,primaryKey);}
                                 }
                             } else {
                                 if (DatabaseExists.validateDatabaseExistence(dbName)) {
