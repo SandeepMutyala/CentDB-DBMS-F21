@@ -7,7 +7,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import utils.GlobalSessionDetails;
 
@@ -25,21 +27,23 @@ public class generateERD {
 		 boolean fetchTableName = false;
 		 String line = br.readLine();
 		 while (line != null) {
-				if (fetchTableName) {
+			 	if (fetchTableName) {
 					System.out.println("Inside fetch table name");
 					columnNamesList = Arrays.asList(line.split("#"));
+					for (String str: columnNamesList) {
+						myWriter.write(str);
+						myWriter.write('\n');	
+					}
 					fetchTableName = false;
-					//break;
 				}
+			 	
 				if (line.matches("\\[{1}\\w*\\]")) {
+					myWriter.write(line);
 					fetchTableName = true;
+					
 				}
-				myWriter.write(line);
+				
 				myWriter.write('\n');
-				for (String str: columnNamesList) {
-					myWriter.write(str);
-					myWriter.write('\n');	
-				}
 				line = br.readLine();
 			}
 		 
