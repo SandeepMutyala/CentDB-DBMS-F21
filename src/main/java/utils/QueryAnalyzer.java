@@ -5,14 +5,24 @@ import dao.DatabaseOperations;
 import java.io.IOException;
 
 public class QueryAnalyzer {
-
+	
+	private static QueryAnalyzer ANALYZER;
+	
+	private QueryAnalyzer() {
+		
+	}
     // public DatabaseOperations dbOperations;
 
     /*QueryAnalyzer(DatabaseOperations dbOperations){
         this.dbOperations=dbOperations;
     }*/
-
-    public  static int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws Exception {
+	public static QueryAnalyzer getInstance() {
+		if(ANALYZER == null) {
+			ANALYZER = new QueryAnalyzer();
+		}
+		return ANALYZER;
+	}
+    public int splitQuery(String query, DatabaseOperations dbOperations, Boolean isTransaction) throws Exception {
         String formattedQuery = isTransaction ? query : removeSemiColon(query);
         String[] analyseQuery=formattedQuery.split(" ");
         int output=0;
