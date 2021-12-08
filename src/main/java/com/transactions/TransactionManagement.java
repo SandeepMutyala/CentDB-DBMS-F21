@@ -39,7 +39,8 @@ public class TransactionManagement {
                             }
                         }
                         try {
-                            queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
+                        	QueryAnalyzer analyzer = QueryAnalyzer.getInstance();
+        					queryOutputAnalysis(analyzer.splitQuery(queryString, dbOperations, true));
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -51,7 +52,8 @@ public class TransactionManagement {
             } else {
                 System.out.println(queryString);
 				try {
-					queryOutputAnalysis(QueryAnalyzer.splitQuery(queryString, dbOperations, false));
+					QueryAnalyzer analyzer = QueryAnalyzer.getInstance();
+					queryOutputAnalysis(analyzer.splitQuery(queryString, dbOperations, false));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
