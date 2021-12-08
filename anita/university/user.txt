@@ -1,4 +1,0 @@
-id:1#firstName:"Anita"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:"123"#confirm_password:"123"#role:"ADMIN"#phone_number:"8997463121"
-id:2#firstName:"Senorita"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:"123"#confirm_password:"123"#role:"ADMIN"#phone_number:"8997463121"
-id:3#firstName:"Anu"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:"123"#confirm_password:"123"#role:"ADMIN"#phone_number:"8997463121"
-id:4#firstName:"Rachel"#lastName:"Mishra"#username:"anita.mishra2106@gmail.com"#password:"123"#confirm_password:"123"#role:"ADMIN"#phone_number:"8997463121"

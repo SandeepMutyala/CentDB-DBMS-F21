@@ -26,6 +26,6 @@ DELETE FROM table_name WHERE condition;
 DELETE FROM university.user WHERE id=1;
 
 
-DROP SYntax
+DROP Syntax
 DROP TABLE table_name;
 Drop table university.user;

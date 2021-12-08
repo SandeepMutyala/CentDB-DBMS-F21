@@ -3,6 +3,7 @@ package dao;
 import Validations.DatabaseExists;
 import Validations.DatatypeValidation;
 import Validations.TableExistence;
+
 import utils.*;
 
 import java.io.*;
@@ -231,24 +232,43 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                         String[] columnNames = matchColumnValueResult.group(1).split(",");
                         String[] columnValues = matchColumnValueResult.group(2).split(",");
                         List<String> totalColumn = Arrays.asList(readColumnsOfTable(dbName, tableName));
+
                         validateProvidedLegitColumns=validateIfColumnIsInTable(columnNames,totalColumn);
 
-                        if(validateProvidedLegitColumns){
-                            // checking if values and table column length entered by user is correct or not
-                            if (columnNames.length == columnValues.length) {
-                                String formattedInsertStringInFile = mergeColumnNameAndValue(columnNames, columnValues);
-                                FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
-                                CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName);
-                                //String directoryPath=String directoryPath=dbPath.concat(analyseQuery[2]);
+                        String primaryKey=readPrimaryKey(dbName,tableName);
+                        int primaryIndex= getPrimaryKeyIndex(primaryKey,columnNames);
 
-                                // write validation logic before inserting into text file and match if table count is not equal to total length of total columns availabe
-                                // in table then enter null for each column.
-                                result = 5;
-                                //System.out.println(insertStringInFile+"Hello string");
-                            } else {
-                                result = 6;
-                                System.out.println("Expecting " + columnNames.length + " values instead got " + columnValues.length);
+                        if(validateProvidedLegitColumns){
+
+                            if(primaryIndex!=-1 && !columnValues[primaryIndex].isEmpty()){
+                                boolean checkDuplicatePrimaryKey=duplicatePrimaryKey(dbName,tableName,columnNames[primaryIndex]+":"+columnValues[primaryIndex]);
+                                if(!checkDuplicatePrimaryKey){
+                                    // checking if values and table column length entered by user is correct or not
+                                    if (columnNames.length == columnValues.length) {
+                                        String formattedInsertStringInFile = mergeColumnNameAndValue(columnNames, columnValues);
+                                        FileWriterClass.writeInFile(formattedInsertStringInFile, insertFilePath);
+                                        CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName);
+                                        //String directoryPath=String directoryPath=dbPath.concat(analyseQuery[2]);
+
+                                        // write validation logic before inserting into text file and match if table count is not equal to total length of total columns availabe
+                                        // in table then enter null for each column.
+                                        result = 5;
+                                        //System.out.println(insertStringInFile+"Hello string");
+                                    } else {
+                                        result = 6;
+                                        System.out.println("Expecting " + columnNames.length + " values instead got " + columnValues.length);
+                                    }
+                                }
+                                else{
+                                    System.out.println("Primary Key Value already exists!");
+                                }
+
                             }
+                            else{
+                                result = 6;
+                                System.out.println("Primary key value not provided");
+                            }
+
                         }
                         else{
                             result = 6;
@@ -483,6 +503,30 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
         }
 
         return columnName;
+    }
+
+    String readPrimaryKey(String dbName,String tableName) throws IOException {
+        String primaryKey="";
+        String tablePath = GlobalSessionDetails.getLoggedInUsername()+"/"+dbName+"/schemaDetails.txt";
+
+        /*List<String> columnNamesList = new ArrayList<String>();*/
+        int counter=0;
+        BufferedReader reader = new BufferedReader(new FileReader(tablePath));
+        String line = reader.readLine();
+
+        while (line != null) {
+            if(counter==2){
+                primaryKey=line.substring(line.indexOf("(")+1,line.indexOf(")"));
+                break;
+            }
+            if(line.contains("["+tableName+"]") || counter==1){
+                counter=counter+1;
+            }
+
+            line = reader.readLine();
+        }
+        reader.close();
+        return primaryKey;
     }
 
 
@@ -874,7 +918,35 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                 validatedPrimaryKey=true;
             }
         }
-
         return validatedPrimaryKey;
+    }
+
+    int getPrimaryKeyIndex(String primaryKey,String[] columns){
+        int index=-1;
+        for(int i=0;i<columns.length;i++){
+            if(primaryKey.equals(columns[i])){
+                index=i;
+            }
+        }
+
+        return index;
+    }
+
+    boolean duplicatePrimaryKey(String dbName, String tableName,String primaryKeyDuplicateValue) throws Exception {
+        boolean duplicatePrimaryKey=false;
+
+        String path = GlobalSessionDetails.getLoggedInUsername() + "/" + dbName + "/" + tableName + ".txt";
+        BufferedReader reader = new BufferedReader(new FileReader(path));
+        String line = reader.readLine();
+
+        while (line != null) {
+            if(line.contains(primaryKeyDuplicateValue)){
+                duplicatePrimaryKey=true;
+                break;
+            }
+            line = reader.readLine();
+        }
+        reader.close();
+        return duplicatePrimaryKey;
     }
 }
