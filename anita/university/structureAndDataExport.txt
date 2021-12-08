@@ -4,7 +4,7 @@ insert into university.user (id,firstname, lastname, username, password, confirm
 insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (3,"mayank", "sareen", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
 update university.user set firstname = "sampada" where id=3;
 delete from university.user where id=3;
-insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (1,"anita", "mishra", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
-insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (2,"sampada", "thakkar", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
-create table university.college ( id int not null, firstname varchar(30) not null, lastname varchar(30) not null, username varchar(45) not null, password varchar(64) not null, confirm_password varchar(64) not null, role varchar(10) not null, phone_number bigint(10) not null, primary key (id));
-create table university.campus ( id int not null, firstname varchar(30) not null, lastname varchar(30) not null, username varchar(45) not null, password varchar(64) not null, confirm_password varchar(64) not null, role varchar(10) not null, phone_number bigint(10) not null, primary key (id));
+create database university;
+insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (7,"sampada", "thakkar", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
+insert into university.user (id,firstname, lastname, username, password, confirm_password,role,phone_number) values (9,"mayank", "sareen", "anita.mishra2106@gmail.com","123","123","admin","8997463121");
+update university.user set firstname = "sampadaaa" where id=9;

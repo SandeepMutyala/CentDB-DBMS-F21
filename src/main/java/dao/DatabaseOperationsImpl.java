@@ -35,15 +35,27 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				File permanantDirectory = new File(permanantDirectoryPath);
 				if (permanantDirectory.exists()) {
 					System.out.println("The requested Database already exists");
+					String permanentStructureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName.substring(4) + "/structureAndDataExport") + ".txt";
+                    String permanentSchemaDetails = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName.substring(4) + "/schemaDetails") + ".txt";
+                    File permanentStructureAndDataExportFile = new File(permanentStructureAndDataExport);
+                    File permanentSchemaDetailsFile = new File(permanentSchemaDetails);
+                    String schemaDetailsTempPath = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName + "/schemaDetails") + ".txt";
+                    String structureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName + "/structureAndDataExport") + ".txt";
+                    File schemaDetailsTempPathFile = new File(schemaDetailsTempPath);
+                    File structureAndDataExportFile = new File(structureAndDataExport);
 					// createDuplicateCopy(directory, permanantDirectory);
-				} else if (!directory.exists()) {
-					directory.createNewFile();
+                    FileWriterClass.createDuplicateCopy(schemaDetailsTempPathFile, permanentSchemaDetailsFile);
+                    FileWriterClass.createDuplicateCopy(structureAndDataExportFile, permanentStructureAndDataExportFile);
 				} else {
 					System.out.println("Database created");
 				}
-			}
+			}else {
             CreateStructureAndDataExportFile.structureAndDataExportFileCreation(dbName);
-            SchemaDetails.createSchemaFile(dbName);
+            SchemaDetails.createSchemaFile(dbName);}
             if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName)){
                 result=1;
             }
@@ -106,33 +118,20 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                     // create Temporary Table
                                     System.out.println("On line 107");
                                     String permanentTablePath = GlobalSessionDetails.getLoggedInUsername()
-                                            .concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
-                                    String permanentStructureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
-                                            .concat("/" + dbName.substring(4) + "/structureAndDataExport") + ".txt";
-                                    String permanentSchemaDetails = GlobalSessionDetails.getLoggedInUsername()
-                                            .concat("/" + dbName.substring(4) + "/schemaDetails") + ".txt";
+                                            .concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";  
                                     File permanentTable = new File(permanentTablePath);
-                                    File permanentStructureAndDataExportFile = new File(permanentStructureAndDataExport);
-                                    File permanentSchemaDetailsFile = new File(permanentSchemaDetails);
                                     if (permanentTable.exists()) {
                                         System.out.println("create");
                                         tablePath =GlobalSessionDetails.getLoggedInUsername()
                                                 .concat("/" + dbName + "/" + tableName) + ".txt";
-                                        String schemaDetailsTempPath = GlobalSessionDetails.getLoggedInUsername()
-                                                .concat("/" + dbName + "/structureAndDataExport") + ".txt";
-                                        String structureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
-                                                .concat("/" + dbName + "/schemaDetails") + ".txt";
                                         File tempTable = new File(tablePath);
-                                        File schemaDetailsTempPathFile = new File(schemaDetailsTempPath);
-                                        File structureAndDataExportFile = new File(structureAndDataExport);
                                         tempTable.createNewFile();
-                                        FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
-                                        FileWriterClass.createDuplicateCopy(schemaDetailsTempPathFile, permanentSchemaDetailsFile);
-                                        FileWriterClass.createDuplicateCopy(structureAndDataExportFile, permanentStructureAndDataExportFile);
+                                        //FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
+                                       
                                     }
                                     tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
-                                    result = createTableFile(dbName, tablePath, tableName, columnDataType, columnName,
-                                            query, isTransaction,primaryKey);
+                                    //result = createTableFile(dbName, tablePath, tableName, columnDataType, columnName,
+                                            //query, isTransaction,primaryKey);
                                 }
                             } else {
                                 if (DatabaseExists.validateDatabaseExistence(dbName)) {
@@ -202,7 +201,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				result = 3;
 			}
 		} else if (isTransaction) {
-			if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, tableDiectoryPath)) {
+			if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName)) {
 				// write logic to extract column and datatype from query
 				//if (SchemaDetails.createSchemaFile(dbName)) {
                     String formattedColumnDetailsInFile = mergeColumnNameAndValue(columnName, columnDataType);

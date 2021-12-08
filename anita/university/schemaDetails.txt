@@ -1,9 +1,3 @@
 [user]
 id:int#firstname:varchar(30)#lastname:varchar(30)#username:varchar(45)#password:varchar(64)#confirm_password:varchar(64)#role:varchar(10)#phone_number:bigint(10);
 [ primary key (id)]
-[college]
-id:int#firstname:varchar(30)#lastname:varchar(30)#username:varchar(45)#password:varchar(64)#confirm_password:varchar(64)#role:varchar(10)#phone_number:bigint(10);
-[primary key (id)]
-[campus]
-id:int#firstname:varchar(30)#lastname:varchar(30)#username:varchar(45)#password:varchar(64)#confirm_password:varchar(64)#role:varchar(10)#phone_number:bigint(10);
-[primary key (id)]
