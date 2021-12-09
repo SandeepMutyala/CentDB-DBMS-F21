@@ -1,7 +1,9 @@
 package com.transactions;
 
+import dao.Analy;
 import dao.DatabaseOperations;
 import dao.DatabaseOperationsImpl;
+import utils.GlobalSessionDetails;
 import utils.QueryAnalyzer;
 
 import java.io.IOException;
@@ -9,26 +11,21 @@ import java.util.*;
 
 public class TransactionManagement {
     static Scanner sc = new Scanner(System.in);
-    public static Boolean executeQuery() {
+    public static Boolean executeQuery() throws IOException {
         Integer counter = 0;
         Boolean isCommitAtLastIndex = false;
         Boolean isRollbackAtLastIndex = false;
     	DatabaseOperations dbOperations = new DatabaseOperationsImpl();
         System.out.println("Enter your Query!");
         String queryString = sc.nextLine().toLowerCase();
+        Analy.query(GlobalSessionDetails.getDbInAction(), 1, GlobalSessionDetails.getLoggedInUsername());
         if (isQueryFormatValid(queryString)) {
         	String[] queries = queryString.split(";");
         	System.out.println(queries.length);
             if (queries.length > 1) {
-                try {
-                    Thread.sleep(queries.length *1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
+                if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
                     System.out.println("Transaction started!");
                     for (String query : queries) {
-                    	System.out.println(query);
                         counter++;
                         query = query.trim();
                         if (query.trim().equals("rollback")) {
@@ -45,21 +42,19 @@ public class TransactionManagement {
                             }
                         }
                         try {
-                        	QueryAnalyzer analyzer = QueryAnalyzer.getInstance();
-        					queryOutputAnalysis(analyzer.splitQuery(query, dbOperations, true));
+                            queryOutputAnalysis(QueryAnalyzer.splitQuery(query, dbOperations, true));
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                     }
-//                } else {
-//                    System.out.println("Please enter a valid transaction! Missing RollBack or Commit.");
-//                }
+                } else {
+                    System.out.println("Please enter a valid transaction! Missing RollBack or Commit.");
+                }
             } else {
                 System.out.println(queryString);
 				try {
-					QueryAnalyzer analyzer = QueryAnalyzer.getInstance();
-					queryOutputAnalysis(analyzer.splitQuery(queryString, dbOperations, false));
+					queryOutputAnalysis(QueryAnalyzer.splitQuery(queryString, dbOperations, false));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -67,11 +62,12 @@ public class TransactionManagement {
             }
             return true;
         }
+
         System.out.println("Query Invalid");
         return false;
     }
 
-    private static Boolean isQueryFormatValid(String query) {
+    public static Boolean isQueryFormatValid(String query) {
         return query.trim().endsWith(";");
     }
 
