@@ -13,6 +13,8 @@ public class UserRegistration {
         user.setUsername(Utils.encodeWithMD5(Utils.validateUserInput("Username", sc)));
         System.out.println(Constants.PASSWORD_FIELD);
         user.setPassword(Utils.encodeWithMD5(Utils.validateUserInput("Password", sc)));
+        System.out.println("Enter user Email");
+        user.setPassword(Utils.encodeWithMD5(Utils.validateUserInput("Email", sc)));
         System.out.println(Constants.SECURITY_Q1_FIELD);
         user.setSecurity_question1(Utils.validateUserInput("Security Question 1", sc));
         System.out.println(Constants.SECURITY_A1_FIELD);
