@@ -35,27 +35,15 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				File permanantDirectory = new File(permanantDirectoryPath);
 				if (permanantDirectory.exists()) {
 					System.out.println("The requested Database already exists");
-					String permanentStructureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
-                            .concat("/" + dbName.substring(4) + "/structureAndDataExport") + ".txt";
-                    String permanentSchemaDetails = GlobalSessionDetails.getLoggedInUsername()
-                            .concat("/" + dbName.substring(4) + "/schemaDetails") + ".txt";
-                    File permanentStructureAndDataExportFile = new File(permanentStructureAndDataExport);
-                    File permanentSchemaDetailsFile = new File(permanentSchemaDetails);
-                    String schemaDetailsTempPath = GlobalSessionDetails.getLoggedInUsername()
-                            .concat("/" + dbName + "/schemaDetails") + ".txt";
-                    String structureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
-                            .concat("/" + dbName + "/structureAndDataExport") + ".txt";
-                    File schemaDetailsTempPathFile = new File(schemaDetailsTempPath);
-                    File structureAndDataExportFile = new File(structureAndDataExport);
 					// createDuplicateCopy(directory, permanantDirectory);
-                    FileWriterClass.createDuplicateCopy(schemaDetailsTempPathFile, permanentSchemaDetailsFile);
-                    FileWriterClass.createDuplicateCopy(structureAndDataExportFile, permanentStructureAndDataExportFile);
+				} else if (!directory.exists()) {
+					directory.createNewFile();
 				} else {
 					System.out.println("Database created");
 				}
-			}else {
+			}
             CreateStructureAndDataExportFile.structureAndDataExportFileCreation(dbName);
-            SchemaDetails.createSchemaFile(dbName);}
+            SchemaDetails.createSchemaFile(dbName);
             if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName)){
                 result=1;
             }
@@ -118,20 +106,17 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                     // create Temporary Table
                                     System.out.println("On line 107");
                                     String permanentTablePath = GlobalSessionDetails.getLoggedInUsername()
-                                            .concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";  
+                                            .concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
                                     File permanentTable = new File(permanentTablePath);
                                     if (permanentTable.exists()) {
                                         System.out.println("create");
-                                        tablePath =GlobalSessionDetails.getLoggedInUsername()
-                                                .concat("/" + dbName + "/" + tableName) + ".txt";
                                         File tempTable = new File(tablePath);
                                         tempTable.createNewFile();
                                         //FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
-                                       
-                                    }else {
+                                    }
                                     tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
                                     result = createTableFile(dbName, tablePath, tableName, columnDataType, columnName,
-                                            query, isTransaction,primaryKey);}
+                                            query, isTransaction,primaryKey);
                                 }
                             } else {
                                 if (DatabaseExists.validateDatabaseExistence(dbName)) {
@@ -201,7 +186,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				result = 3;
 			}
 		} else if (isTransaction) {
-			if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName)) {
+			if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, tableDiectoryPath)) {
 				// write logic to extract column and datatype from query
 				//if (SchemaDetails.createSchemaFile(dbName)) {
                     String formattedColumnDetailsInFile = mergeColumnNameAndValue(columnName, columnDataType);
@@ -738,6 +723,7 @@ return result;
                     }
                     result = 9;
                     CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName);
+                    Analy.update(GlobalSessionDetails.getDbInAction(), 1, tableName);
                 }
             } else {
                 result = 10;
