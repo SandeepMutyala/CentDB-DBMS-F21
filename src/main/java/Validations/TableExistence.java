@@ -1,6 +1,7 @@
 package Validations;
 
 import utils.GlobalSessionDetails;
+import utils.LogPrinter;
 
 import java.io.File;
 
@@ -21,6 +22,8 @@ public class TableExistence {
         }
 
         System.out.println("Table does not exists");
+        LogPrinter print = LogPrinter.getInstanceObject();
+        print.errorPrinter("Table " + tableName + " doesn't exists " + " in the database " + dbName);
         return false;
     }
 }
