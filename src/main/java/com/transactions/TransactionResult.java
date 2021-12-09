@@ -51,20 +51,20 @@ public class TransactionResult {
 						permanentTableFile.createNewFile();
 					}
 					FileWriterClass.createDuplicateCopy(permanentTableFile, table);
-					if (!isCommitAtLastIndex) {
-						System.out.println();
-						if(!table.getName().equals("schemaDetails.txt") &&
-							!table.getName().equals("StructureAndDataExport.txt")) {
-							table.createNewFile();
-						}
-					} else {
+//					if (!isCommitAtLastIndex) {
+//						System.out.println();
+//						if(!table.getName().equals("schemaDetails.txt") &&
+//							!table.getName().equals("StructureAndDataExport.txt")) {
+//							table.createNewFile();
+//						}
+//					} else {
 						table.delete();
-					}
+//					}
 				}
 			}
-			if (isCommitAtLastIndex) {
+//			if (isCommitAtLastIndex) {
 				folder.delete();
-			}
+//			}
 		}
 	}
 }

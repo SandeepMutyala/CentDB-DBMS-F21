@@ -3,8 +3,9 @@ package com.user_interface;
 import com.security.UserLogin;
 import com.security.UserRegistration;
 import com.transactions.TransactionManagement;
+
+import erdGeneration.generateERD;
 import utils.Constants;
-import EDRGeneration.generateERD;
 import utils.SQLDumpGenerator;
 
 import java.io.FileNotFoundException;
