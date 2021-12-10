@@ -5,52 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="52946c5e-de5f-4357-b053-bbff9496b134" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/EDRGeneration/generateERD.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Main.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Validations/DatabaseExists.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Validations/DatatypeValidation.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Validations/TableExistence.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/security/UserLogin.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/security/Utils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionManagement.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionManagement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionResult.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/user_interface/UserInterface.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/user_interface/UserInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperations.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/UserDaoImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/genericDao.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/userDao.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/utils/Constants.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/utils/CreateStructureAndDataExportFile.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/utils/FileComparison.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/utils/FileWriterClass.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/utils/GlobalSessionDetails.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/utils/QueryAnalyzer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/utils/SchemaDetails.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tempStructureAndDataExport.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data5408.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README" beforeDir="false" afterPath="$PROJECT_DIR$/README" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User_Profile.txt" beforeDir="false" afterPath="$PROJECT_DIR$/User_Profile.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/anita/university/structureAndDataExport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/anita/university/structureAndDataExport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/anita/university/user.txt" beforeDir="false" afterPath="$PROJECT_DIR$/anita/university/user.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Validations/DatatypeValidation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Validations/DatatypeValidation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/security/OTP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/security/OTP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/FileWriterClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/FileWriterClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/QueryAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/QueryAnalyzer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/SchemaDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/utils/SchemaDetails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/transactions/TransactionManagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/utils/FileReaderClass.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -90,6 +52,13 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../CS 5308 Adv Software/Project/Project Code/group25" />
     <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Mayank\Desktop\Dal Course Work\CS 5408 Data Management\Project\Project Git\5408-data_project" />
+      <recent name="C:\Users\Mayank\Desktop\Dal Course Work\CS 5408 Data Management\Project\Project Git\5408-data_project\src" />
+      <recent name="C:\Users\Mayank\Desktop\Dal Course Work\CS 5408 Data Management\Project\Project Git\5408-data_project\src\main\java\com\transactions" />
+    </key>
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -152,7 +121,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java</url>
-          <line>181</line>
+          <line>185</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -172,7 +141,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/dao/DatabaseOperationsImpl.java</url>
-          <line>175</line>
+          <line>179</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
