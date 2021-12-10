@@ -7,6 +7,7 @@ import com.transactions.TransactionManagement;
 import dao.Analy;
 import erdGeneration.generateERD;
 import utils.Constants;
+import utils.SQLDumpGenerator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,12 +49,17 @@ public class UserInterface {
 			case 1:
 				TransactionManagement.executeQuery();
 				break;
-			case 2: // handleExport();
+			case 2:
+				System.out.println("enter the database name to export");
+				Scanner scDbName = new Scanner(System.in);
+				String dbName = scDbName.nextLine();
+				SQLDumpGenerator sqlDumpGenerator = new SQLDumpGenerator();
+				sqlDumpGenerator.dumpGenerator(dbName);
 				break;
 			case 3:
 				System.out.println("Please enter the database name to generate ERD");
 				Scanner scanner = new Scanner(System.in);
-				String dbName = scanner.nextLine().toLowerCase();
+				dbName = scanner.nextLine().toLowerCase();
 				generateERD.createERD(dbName);
 				break;
 			case 4:

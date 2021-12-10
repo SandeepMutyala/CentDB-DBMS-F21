@@ -1,0 +1,128 @@
+
+| Dec/10/2021 - 16:52:46 - Fri |
+
+The database dahousie created by Sandeep
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:43:46 - Fri |
+
+The table named student has been created by Sandeep in the database named dalhousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:44:41 - Fri |
+
+The table named user has been created by Sandeep in the database named dal.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:45:44 - Fri |
+
+The table named professor has been created by Sandeep in the database named dalhousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:48:28 - Fri |
+
+User Sandeep inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table student inside a database named dalhousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:50:37 - Fri |
+
+User Sandeep inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table professor inside a database named dalhousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:52:43 - Fri |
+
+User Sandeep inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table professor inside a database named dalhousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:53:13 - Fri |
+
+User Sandeep inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table student inside a database named dalhousie.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:56:00 - Fri |
+
+Select query is executed by Sandeep on the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:56:48 - Fri |
+
+Select query is executed by Sandeep on the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:58:41 - Fri |
+
+Select query is executed by Sandeep on the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 16:59:28 - Fri |
+
+Update query has been successfully executed by user Sandeep on the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 17:01:01 - Fri |
+
+The table named user has been created by Sandeep in the database named university.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 17:02:14 - Fri |
+
+The table named user has been created by Sandeep in the database named university.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+	
+| Dec/10/2021 - 17:04:24 - Fri |
+
+Successfully deleted a row in the table student on the database dahousie given by user Sandeep
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:05:46 - Fri |
+
+The database walmart created by Sandeep
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:06:19 - Fri |
+
+The table named item has been created by Sandeep in the database named walmart.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:08:28 - Fri |
+
+User Sandeep inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table item inside a database named walmart.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:15:20 - Fri |
+
+The database store created by Raj
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:16:46 - Fri |
+
+The table named item has been created by Raj in the database named store.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:17:29 - Fri |
+
+User Raj inserted columns named id,firstname, lastname, username, password, confirm_password,role,phone_number in table product inside a database named store.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+

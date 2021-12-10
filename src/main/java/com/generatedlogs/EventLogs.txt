@@ -1,0 +1,103 @@
+	
+| Dec/10/2021 - 16:49:12 - Fri |
+
+Error: Primary key value already exists for the student which is in the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:51:13 - Tue |
+
+Error: Database named  Store doesn't exists.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:52:10 - Tue |
+
+Error: Table employe doesn't exists  in the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:52:46 - Fri |
+
+Error: failed to create table in the database Store
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:54:14 - Fri |
+
+Error: Provided wrong dbName while performing create query by Sandeep in the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:55:18 - Fri |
+
+Error: Provided wrong column name while performing create query by Sandeep
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:56:42 - Fri |
+
+Error: Provided wrong create syntax by user Sandeep in the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 16:59:12 - Fri |
+
+Error: Provided wrong dbName while performing select query by Sandeep in the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:02:14 - Fri |
+
+Error: Provided wrong column name while performing select query by Sandeep
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:03:00 - Fri |
+
+Error: Provided wrong select syntax by user Sandeep in the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:05:14 - Fri |
+
+Error: Provided wrong dbName while performing update query by Sandeep in the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:06:19 - Fri |
+
+Error: Provided wrong column name while performing update query by Sandeep
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:10:14 - Fri |
+
+Error: Provided wrong select update by user Sandeep on the database dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:12:10 - Tue |
+
+Error: Table employe doesn't exists  in the database Store
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:14:11 - Tue |
+
+Error: Table employe doesn't exists  in the database Store
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+| Dec/10/2021 - 17:18:46 - Fri |
+
+failed to delete record in the databse dalhousie
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
+
+	
+| Dec/10/2021 - 17:41:31 - Fri |
+
+Error: Database named  dalhousie doesn't exists.
+
+---------------------------------------------+++++++++++++++++++++++++++---------------------------------------------
