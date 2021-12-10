@@ -6,14 +6,14 @@ import dao.DatabaseOperationsImpl;
 import utils.GlobalSessionDetails;
 import utils.QueryAnalyzer;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class TransactionManagement {
     static Scanner sc = new Scanner(System.in);
     public static Boolean executeQuery() {
         Integer counter = 0;
-        Boolean lockFlag = false;
         Boolean isCommitAtLastIndex = false;
         Boolean isRollbackAtLastIndex = false;
     	DatabaseOperations dbOperations = new DatabaseOperationsImpl();
@@ -25,19 +25,36 @@ public class TransactionManagement {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        String filePath = "isTransactionRunning.txt";
+        File f = new File(filePath);
+        BufferedReader fileReader = null;
         if (isQueryFormatValid(queryString)) {
-        	if(!lockFlag) {
-        		lockFlag = true;
-        	}
+            try {
+                fileReader = new BufferedReader(new FileReader(f));
+                String line = fileReader.readLine();
+                fileReader.close();
+                while(line!=null && line.contains("true")) {
+                    Thread.sleep(1500);
+                    fileReader = new BufferedReader(new FileReader(filePath));
+                    line = fileReader.readLine();
+                    fileReader.close();
+                    System.out.println(line);
+                }
+                BufferedWriter fileWriter = new BufferedWriter(new FileWriter(f));
+                fileWriter.write("true");
+                fileWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         	String[] queries = queryString.split(";");
         	System.out.println(queries.length);
             if (queries.length > 1) {
                 try {
-                    Thread.sleep(queries.length *1000);
+                    Thread.sleep(queries.length * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-              // if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
+                // if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
                     System.out.println("Transaction started!");
                     for (String query : queries) {
                     	System.out.println(query);
@@ -64,8 +81,14 @@ public class TransactionManagement {
                             e.printStackTrace();
                         }
                     }
-					
-					/* } else { System.out. */
+                try {
+                    BufferedWriter fileWriter = new BufferedWriter(new FileWriter(f));
+                    fileWriter.write("false");
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                /* } else { System.out. */
 					  //println("Please enter a valid transaction! Missing RollBack or Commit."); }
 					 
             } else {
