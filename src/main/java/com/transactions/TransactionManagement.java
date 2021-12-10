@@ -1,7 +1,9 @@
 package com.transactions;
 
+import dao.Analy;
 import dao.DatabaseOperations;
 import dao.DatabaseOperationsImpl;
+import utils.GlobalSessionDetails;
 import utils.QueryAnalyzer;
 
 import java.io.IOException;
@@ -17,6 +19,12 @@ public class TransactionManagement {
     	DatabaseOperations dbOperations = new DatabaseOperationsImpl();
         System.out.println("Enter your Query!");
         String queryString = sc.nextLine().toLowerCase();
+        try {
+			Analy.query(GlobalSessionDetails.getDbInAction(), 1, GlobalSessionDetails.getLoggedInUsername());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         if (isQueryFormatValid(queryString)) {
         	if(!lockFlag) {
         		lockFlag = true;

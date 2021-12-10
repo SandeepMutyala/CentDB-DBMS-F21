@@ -742,6 +742,7 @@ return result;
                     }
                     result = 9;
                     CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName);
+                    Analy.update(GlobalSessionDetails.getDbInAction(), 1, tableName);
                 }
             } else {
                 result = 10;
