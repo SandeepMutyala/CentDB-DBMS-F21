@@ -3,6 +3,7 @@ package com.user_interface;
 import com.security.UserLogin;
 import com.transactions.TransactionManagement;
 
+import dao.Analy;
 import erdGeneration.generateERD;
 import utils.Constants;
 
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class UserInterface {
-	public static void userView() {
+	public static void userView() throws IOException {
 		Boolean isSuccessResponse = false;
 		int choice = 0;
 		Scanner sc = new Scanner(System.in);
@@ -56,6 +57,7 @@ public class UserInterface {
 				generateERD.createERD(dbName);
 				break;
 			case 4: // performAnalytics();
+				Analy.analysis();
 				break;
 			case 5:
 				isSuccessResponse = false;

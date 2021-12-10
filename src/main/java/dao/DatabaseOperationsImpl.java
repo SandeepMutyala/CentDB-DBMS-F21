@@ -907,6 +907,7 @@ return result;
 
                             result = 11;
                             CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName);
+                            Analy.delete(GlobalSessionDetails.getDbInAction(), 1, tableName);
 
 
                             /*
