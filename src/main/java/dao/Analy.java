@@ -2,7 +2,6 @@ package dao;
 
 import com.transactions.TransactionManagement;
 import com.user_interface.UserInterface;
-import model.query;
 import utils.FileWriterClass;
 import utils.GlobalSessionDetails;
 

@@ -1,12 +1,7 @@
 package com.security;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.Random;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message;

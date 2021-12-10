@@ -35,18 +35,30 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				File permanantDirectory = new File(permanantDirectoryPath);
 				if (permanantDirectory.exists()) {
 					System.out.println("The requested Database already exists");
+					String permanentStructureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName.substring(4) + "/structureAndDataExport") + ".txt";
+                    String permanentSchemaDetails = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName.substring(4) + "/schemaDetails") + ".txt";
+                    File permanentStructureAndDataExportFile = new File(permanentStructureAndDataExport);
+                    File permanentSchemaDetailsFile = new File(permanentSchemaDetails);
+                    String schemaDetailsTempPath = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName + "/schemaDetails") + ".txt";
+                    String structureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
+                            .concat("/" + dbName + "/structureAndDataExport") + ".txt";
+                    File schemaDetailsTempPathFile = new File(schemaDetailsTempPath);
+                    File structureAndDataExportFile = new File(structureAndDataExport);
 					// createDuplicateCopy(directory, permanantDirectory);
-				} else if (!directory.exists()) {
-					directory.createNewFile();
+                    FileWriterClass.createDuplicateCopy(schemaDetailsTempPathFile, permanentSchemaDetailsFile);
+                    FileWriterClass.createDuplicateCopy(structureAndDataExportFile, permanentStructureAndDataExportFile);
 				} else {
 					System.out.println("Database created");
 				}
-			}
+			}else {
             CreateStructureAndDataExportFile.structureAndDataExportFileCreation(dbName);
             SchemaDetails.createSchemaFile(dbName);
             if(CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query,dbName)){
                 result=1;
-            }
+            }}
 		}
 		return result;
 	}
@@ -84,24 +96,20 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				columnDataType = fetchColumnDataType(removedPrimaryKeyColumnDetails);
 				//System.out.println(columnDataType[0]);
 				columnName = fetchColumnName(removedPrimaryKeyColumnDetails);
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.queryMessagePrinter("The table named "+ tableName + " has been created by " + GlobalSessionDetails.loggedInUsername+ " in the database named "+ dbName+ ".");
-                print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has ","table");
 
 				if (DatatypeValidation.validateTableDataType(columnDataType)) {
                     if(validatePrimaryKey(primaryKey,columnName)){
                         if (separateDbtableName.length == 2) {
                             dbName = isTransaction?"temp"+separateDbtableName[0].trim():separateDbtableName[0].trim();
                             tableName = separateDbtableName[1].trim().toLowerCase();
-//
+
                         } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
                             dbName = GlobalSessionDetails.getDbInAction().trim();
                             tableName = matchResult.group(1).trim().toLowerCase();
+                            //System.out.println(tableName);
                         } else {
                             result = 4;
                             System.out.println("Either provide dbName or use useDB operation");
-                            //LogPrinter print = LogPrinter.getInstanceObject();
-                            print.errorPrinter("Database "+ dbName + " provided by " + GlobalSessionDetails.getLoggedInUsername() +  " doesn't exist.");
                         }
 
                         if(!dbName.isEmpty()){
@@ -110,19 +118,25 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                     // create Temporary Table
                                     System.out.println("On line 107");
                                     String permanentTablePath = GlobalSessionDetails.getLoggedInUsername()
-                                            .concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";
+                                            .concat("/" + dbName.substring(4) + "/" + tableName) + ".txt";  
                                     File permanentTable = new File(permanentTablePath);
                                     if (permanentTable.exists()) {
                                         System.out.println("create");
+                                        tablePath =GlobalSessionDetails.getLoggedInUsername()
+                                                .concat("/" + dbName + "/" + tableName) + ".txt";
                                         File tempTable = new File(tablePath);
                                         tempTable.createNewFile();
                                         //FileWriterClass.createDuplicateCopy(tempTable, permanentTable);
-                                    }
+                                       
+                                    }else{
+                                    	
                                     tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
                                     result = createTableFile(dbName, tablePath, tableName, columnDataType, columnName,
                                             query, isTransaction,primaryKey);
                                 }
-                            } else {
+                            } 
+                                
+                            }else {
                                 if (DatabaseExists.validateDatabaseExistence(dbName)) {
                                     tablePath=GlobalSessionDetails.getLoggedInUsername().concat("/"+dbName+"/"+tableName)+".txt";
                                     result=createTableFile(dbName,tablePath,tableName,columnDataType,columnName,query,isTransaction,primaryKey.trim());
@@ -131,9 +145,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                         }
                     }else{
                         result=4;
-                        System.out.println("Primary key provided does not exists in column definition");
-                        //LogPrinter print = LogPrinter.getInstanceObject();
-                        print.errorPrinter("Primary key doesn't exist in the database "+dbName+" provided by user " + GlobalSessionDetails.loggedInUsername);
+                        System.out.println("Primary key provided does not exists in column definitaion");
                     }
 
 
@@ -142,10 +154,9 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				}
 			} else {
 				System.out.println("Please check the syntax for table creation");
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.errorPrinter("Syntax given by "+ GlobalSessionDetails.getLoggedInUsername() + " for table creation is not valid.");
 			}
-		} catch (Exception ex) {
+		 
+			}catch (Exception ex) {
 			System.out.println("Please check the syntax for table creation" + ex);
 			result = 4;
 		} finally {
@@ -194,7 +205,7 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 				result = 3;
 			}
 		} else if (isTransaction) {
-			if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, tableDiectoryPath)) {
+			if (CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName)) {
 				// write logic to extract column and datatype from query
 				//if (SchemaDetails.createSchemaFile(dbName)) {
                     String formattedColumnDetailsInFile = mergeColumnNameAndValue(columnName, columnDataType);
@@ -208,8 +219,6 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
 			result = 3;
 		} else {
 			System.out.println("Table Already exists");
-            LogPrinter print = LogPrinter.getInstanceObject();
-            print.errorPrinter("Table created by "+ GlobalSessionDetails.getLoggedInUsername() + " already exists the " + dbName);
 		}
 		return result;
 	}
@@ -322,35 +331,24 @@ public class DatabaseOperationsImpl implements DatabaseOperations {
                                             // in table then enter null for each column.
                                             result = 5;
                                             //System.out.println(insertStringInFile+"Hello string");
-                                            LogPrinter print = LogPrinter.getInstanceObject();
-                                            print.queryMessagePrinter("User "+ GlobalSessionDetails.getLoggedInUsername() + " inserted columns named " +matchColumnValueResult.group(1) + " in table "+ tableName+ " inside a database named "+ dbName + ".");
-                                            print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"insert");
                                         }
 
                                     } else {
                                         result = 6;
                                         System.out.println("Expecting " + columnNames.length + " values instead got " + columnValues.length);
-                                        LogPrinter print = LogPrinter.getInstanceObject();
-                                        print.errorPrinter("Expecting "+columnNames.length+" values instead got "+columnValues.length + " while inserting into the table.");
                                     }
                                 } else {
                                     System.out.println("Primary Key Value already exists!");
-                                    LogPrinter print = LogPrinter.getInstanceObject();
-                                    print.errorPrinter("Primary key value already exists for the "+tableName+" which is in the database "+ dbName);
                                 }
 
                             } else {
                                 result = 6;
                                 System.out.println("Primary key value not provided");
-                                LogPrinter print = LogPrinter.getInstanceObject();
-                                print.errorPrinter("Primary key value is not provided while creating "+tableName+" in the database "+ dbName);
                             }
 
                         } else {
                             result = 6;
                             System.out.println("Trying to insert column that doesn't exists in table");
-                            LogPrinter print = LogPrinter.getInstanceObject();
-                            print.errorPrinter("Trying to insert into column that does not in the database "+ dbName);
                         }
 
                     }
@@ -401,8 +399,6 @@ return result;
                 } else {
                     result = 8;
                     System.out.println("Either provide dbName or use useDB operation");
-                    LogPrinter print = LogPrinter.getInstanceObject();
-                    print.errorPrinter("Provided wrong dbName while performing select query by " + GlobalSessionDetails.loggedInUsername+ " on the database "+dbName);
                 }
 
                 if (!dbName.isEmpty() && !tableName.isEmpty()) {
@@ -449,13 +445,9 @@ return result;
                             }
                             System.out.println(fmt);
                             result = 7;
-                            LogPrinter print = LogPrinter.getInstanceObject();
-                            print.queryMessagePrinter("Select query is executed by " + GlobalSessionDetails.loggedInUsername+ " on the database "+dbName);
                         } else {
                             result = 8;
                             System.out.println("Provided Columns does not exists in table");
-                            LogPrinter print = LogPrinter.getInstanceObject();
-                            print.errorPrinter("Provided wrong column name while performing select query by " + GlobalSessionDetails.loggedInUsername+ " on the database "+dbName);
                         }
                     }
                 }
@@ -463,8 +455,6 @@ return result;
             } else {
                 result = 8;
                 System.out.println("Please provide valid select syntax");
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.errorPrinter("Provided wrong select syntax by user " + GlobalSessionDetails.loggedInUsername+ " on the database "+dbName);
             }
             return result;
         }
@@ -648,9 +638,6 @@ return result;
             Matcher whereMatcher = wherePattern.matcher(query);
             if (matcherDBTable.find()) {
                 String[] separateDbtableName = matcherDBTable.group(0).split("\\.");
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.queryMessagePrinter("Update query has been successfully executed by user " + GlobalSessionDetails.loggedInUsername+ " on the database "+ dbName);
-                print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"update");
 
                 // to check if user entered db and table name in query. if not then check if
                 // global session contains value, if not then SOp, db absent
@@ -666,7 +653,6 @@ return result;
                 } else {
                     result = 10;
                     System.out.println("Either provide dbName or use useDB operation");
-                    print.errorPrinter("Provided database by user " + GlobalSessionDetails.loggedInUsername + " doesn't exist.");
                 }
 
                 if (!tableName.isEmpty() && !dbName.isEmpty()) {
@@ -756,13 +742,10 @@ return result;
                     }
                     result = 9;
                     CreateStructureAndDataExportFile.insertInStructureAndDataExportFile(query, dbName);
-                    Analy.update(GlobalSessionDetails.getDbInAction(), 1, tableName);
                 }
             } else {
                 result = 10;
                 System.out.println("Please enter valid update syntax");
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.errorPrinter("Provided wrong update syntax by user " + GlobalSessionDetails.loggedInUsername+ " while performing operation on the database "+dbName);
             }
             return result;
 
@@ -806,9 +789,6 @@ return result;
                 if (separateDbtableName.length == 2) {
                     dbName = isTransaction ? "temp" + separateDbtableName[0].trim() : separateDbtableName[0].trim();
                     tableName = separateDbtableName[1].trim().toLowerCase();
-                    LogPrinter print = LogPrinter.getInstanceObject();
-                    print.queryMessagePrinter("Successfully deleted the table " +tableName + " on the database " +dbName+ " given by user "+GlobalSessionDetails.loggedInUsername);
-                    print.generalMessagePrinter("The database "+ dbName + " created by " + GlobalSessionDetails.loggedInUsername+ " has " ,"delete");
 
                 } else if (!GlobalSessionDetails.getDbInAction().isEmpty()) {
                     dbName = GlobalSessionDetails.getDbInAction().trim();
@@ -816,8 +796,6 @@ return result;
                 } else {
                     result = 12;
                     System.out.println("Either provide dbName or use useDB operation");
-                    LogPrinter print = LogPrinter.getInstanceObject();
-                    print.errorPrinter("Provided wrong dbname by user " + GlobalSessionDetails.loggedInUsername+ " while performing delete table operation on the database "+dbName);
                 }
 
                 if (!tableName.isEmpty() && !dbName.isEmpty()) {
@@ -896,8 +874,6 @@ return result;
             } else {
                 result = 12;
                 System.out.println("Please enter valid update syntax");
-                LogPrinter print = LogPrinter.getInstanceObject();
-                print.errorPrinter("Provided wrong delete syntax by user " + GlobalSessionDetails.loggedInUsername+ " while performing delete operation on the database "+dbName);
             }
             return result;
         }

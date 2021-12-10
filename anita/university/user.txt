@@ -1,1 +1,2 @@
-id:4#firstname:"sampada"#lastname:"thakkar"#username:"anita.mishra2106@gmail.com"#password:"123"#confirm_password:"123"#role:"admin"#phone_number:"8997463121"
+id:1#firstname:"sampada"#lastname:"thakkar"#username:"anita.mishra2106@gmail.com"#password:"123"#confirm_password:"123"#role:"admin"#phone_number:"8997463121"
+id:7#firstname:"mayank"#lastname:"sareen"#username:"anita.mishra2106@gmail.com"#password:"123"#confirm_password:"123"#role:"admin"#phone_number:"8997463121"

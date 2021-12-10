@@ -13,7 +13,19 @@ public class TransactionResult {
 			if (folder.getName().substring(0, 4).equals("temp")) {
 				for (File file : folder.listFiles()) {
 					if (!isRollbackAtLastIndex) {
-						if(!file.getName().equals("schemaDetails.txt") && !file.getName().equals("StructureAndDataExport.txt")) {
+						if(file.getName().equals("structureAndDataExport.txt")) {
+							file.delete();
+							String permanentStructureAndDataExport = GlobalSessionDetails.getLoggedInUsername()
+		                            .concat("/" + folder.getName().substring(4) + "/structureAndDataExport") + ".txt";
+							File permanentStructureAndDataExportFile = new File(permanentStructureAndDataExport);
+							try {
+								FileWriterClass.createDuplicateCopy(file, permanentStructureAndDataExportFile);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						else if(!file.getName().equals("schemaDetails.txt")) {
 							try {
 								file.delete();
 								file.createNewFile();
@@ -51,20 +63,19 @@ public class TransactionResult {
 						permanentTableFile.createNewFile();
 					}
 					FileWriterClass.createDuplicateCopy(permanentTableFile, table);
-//					if (!isCommitAtLastIndex) {
-//						System.out.println();
-//						if(!table.getName().equals("schemaDetails.txt") &&
-//							!table.getName().equals("StructureAndDataExport.txt")) {
-//							table.createNewFile();
-//						}
-//					} else {
+					
+					  if (!isCommitAtLastIndex) { System.out.println();
+					  if(!table.getName().equals("schemaDetails.txt") &&
+					  !table.getName().equals("StructureAndDataExport.txt")) {
+					  table.createNewFile(); } } else {
+					 
 						table.delete();
-//					}
+					}
 				}
 			}
-//			if (isCommitAtLastIndex) {
+			if (isCommitAtLastIndex) {
 				folder.delete();
-//			}
+			}
 		}
 	}
 }
