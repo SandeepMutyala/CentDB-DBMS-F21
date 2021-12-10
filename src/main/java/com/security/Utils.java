@@ -1,5 +1,6 @@
 package com.security;
 import dao.UserDaoImpl;
+import utils.GlobalSessionDetails;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -18,6 +19,9 @@ public class Utils {
         String field;
         while((field = sc.nextLine()).isEmpty()) {
             System.out.println(fieldName + " is required!");
+        }
+        if(fieldName.equals("Username")) {
+            GlobalSessionDetails.setLoggedInUsername(field);
         }
         return field;
     }

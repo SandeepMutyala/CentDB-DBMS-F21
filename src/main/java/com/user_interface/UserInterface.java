@@ -1,6 +1,7 @@
 package com.user_interface;
 
 import com.security.UserLogin;
+import com.security.UserRegistration;
 import com.transactions.TransactionManagement;
 
 import dao.Analy;
@@ -22,7 +23,7 @@ public class UserInterface {
 		choice = sc.nextInt();
 		switch (choice) {
 		case 1:
-			isSuccessResponse = true;// UserRegistration.registerUser();
+			isSuccessResponse = UserRegistration.registerUser();
 			break;
 		case 2:
 			isSuccessResponse = UserLogin.userLogin();
@@ -46,7 +47,6 @@ public class UserInterface {
 			switch (choice) {
 			case 1:
 				TransactionManagement.executeQuery();
-				// writeQueries();
 				break;
 			case 2: // handleExport();
 				break;
@@ -56,7 +56,7 @@ public class UserInterface {
 				String dbName = scanner.nextLine().toLowerCase();
 				generateERD.createERD(dbName);
 				break;
-			case 4: // performAnalytics();
+			case 4:
 				Analy.analysis();
 				break;
 			case 5:

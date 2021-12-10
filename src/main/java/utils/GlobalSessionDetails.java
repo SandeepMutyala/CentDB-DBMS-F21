@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class GlobalSessionDetails {
 
-    public static String loggedInUsername="anita";
+    public static String loggedInUsername;
     public static String dbInAction;
    public static Map<String,String> tableRecords=new HashMap<String, String>();
     private GlobalSessionDetails(){}

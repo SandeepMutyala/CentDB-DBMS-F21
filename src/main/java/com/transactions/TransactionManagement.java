@@ -29,29 +29,25 @@ public class TransactionManagement {
         File f = new File(filePath);
         BufferedReader fileReader = null;
         if (isQueryFormatValid(queryString)) {
-            try {
-                fileReader = new BufferedReader(new FileReader(f));
-                String line = fileReader.readLine();
-                fileReader.close();
-                while(line!=null && line.contains("true")) {
-                    Thread.sleep(1500);
-                    fileReader = new BufferedReader(new FileReader(filePath));
-                    line = fileReader.readLine();
-                    fileReader.close();
-                    System.out.println(line);
-                }
-                BufferedWriter fileWriter = new BufferedWriter(new FileWriter(f));
-                fileWriter.write("true");
-                fileWriter.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        	String[] queries = queryString.split(";");
+            String[] queries = queryString.split(";");
         	System.out.println(queries.length);
             if (queries.length > 1) {
                 try {
+                    fileReader = new BufferedReader(new FileReader(f));
+                    String line = fileReader.readLine();
+                    fileReader.close();
+                    while(line!=null && line.contains("true")) {
+                        Thread.sleep(1500);
+                        fileReader = new BufferedReader(new FileReader(filePath));
+                        line = fileReader.readLine();
+                        fileReader.close();
+                        System.out.println(line);
+                    }
+                    BufferedWriter fileWriter = new BufferedWriter(new FileWriter(f));
+                    fileWriter.write("true");
+                    fileWriter.close();
                     Thread.sleep(queries.length * 1000);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 // if (Arrays.asList(queries).contains("commit") || Arrays.asList(queries).contains("rollback")) {
